@@ -1,0 +1,13 @@
+{
+    "name": "zzz_GalacticProtocol",
+    "version": "0.0.1",
+    "title": "Galactic Protocol",
+    "author": "lihop",
+    "contact": "lihops.game@gmail.com",
+    "homepage": "https://github.com/Lihopps/Galactic-Protocol",
+    "factorio_version": "2.0",
+    "dependencies": [
+	"base >=2.0.60",
+    "space-age>=2.0.0"],
+    "description": "Continue exploration,build a dyson sphere"
+}
