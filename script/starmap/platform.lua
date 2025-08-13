@@ -16,6 +16,7 @@ local function createPlatformPh(platform)
     end
     local ship=game.surfaces[surface].create_entity{type="lamp",name="spaceshipph",position=position,force="gp-superfriendly"}
     storage.gpplatform[platform.index]=ship
+    storage.gpship[ship.unit_number]=platform
 end
 
 local function get_pos_on_map_from_connection(platform)
@@ -68,6 +69,7 @@ end
 
 local function on_entity_died(e)
     if e.entity.name=="space-platform-hub" then
+        storage.gpship[e.entity.unit_number]=nil
         storage.gpplatform[e.entity.surface.platform.index].destroy()
         storage.gpplatform[e.entity.surface.platform.index]=nil
     end

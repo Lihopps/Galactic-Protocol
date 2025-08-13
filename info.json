@@ -7,7 +7,8 @@
     "homepage": "https://github.com/Lihopps/Galactic-Protocol",
     "factorio_version": "2.0",
     "dependencies": [
-	"base >=2.0.60",
-    "space-age>=2.0.0"],
+	"base >=2.0.64",
+    "space-age>=2.0.64",
+    "flib >=0.16.3"],
     "description": "Continue exploration,build a dyson sphere"
 }

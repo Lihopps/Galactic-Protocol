@@ -35,49 +35,51 @@ local function place_placeholder(surface, Pname, parent_entityPH, starname, star
     for _, name in pairs(parent_data.child) do
         -- place child
         local child = prototypes.space_location[name]
-        local position = { x = child.position.x - refstar.position.x, y = child.position.y - refstar.position.y }
-        local planet = surface.create_entity { type = "lamp", name = name, position = position, force = "gp-superfriendly" }
-        storage.gpuniverse[planet.name]=surface.name
+        if child then
+            local position = { x = child.position.x - refstar.position.x, y = child.position.y - refstar.position.y }
+            local planet = surface.create_entity { type = "lamp", name = name, position = position, force = "gp-superfriendly" }
+            storage.gpuniverse[planet.name] = surface.name
 
-        -- draw circle around
-        local circle_size = math.abs(prototypes.entity[name].selection_box.left_top.x)
-        circle_size=circle_size + 0.3 * circle_size
-        local circle = rendering.draw_circle {
-            color = { 1, 1, 1 },
-            radius = circle_size,
-            width = 2,
-            target = planet,
-            surface = surface,
-            draw_on_ground = true
-        }
-        circle.move_to_back()
+            -- draw circle around
+            local circle_size = math.abs(prototypes.entity[name].selection_box.left_top.x)
+            circle_size = circle_size + 0.3 * circle_size
+            local circle = rendering.draw_circle {
+                color = { 1, 1, 1 },
+                radius = circle_size,
+                width = 2,
+                target = planet,
+                surface = surface,
+                draw_on_ground = true
+            }
+            circle.move_to_back()
 
-        -- draw orbit
-        local angle = math.asin(2 * (circle_size) /(2 * util_math.distance(refstar.position, position)))
-        local orbit = rendering.draw_arc {
-            color = { 0.3, 0.3, 0.3, 0.3 },
-            max_radius = (util_math.distance(refstar.position, position) + 1 / 32),
-            min_radius = (util_math.distance(refstar.position, position) - 1 / 32),
-            start_angle = util_math.cart_to_pol(position).angle + angle,
-            angle = (2 * math.pi) - (2 * angle),
-            target = parent_entityPH,
-            surface = surface,
-            draw_on_ground = true,
-        }
-        orbit.move_to_back()
+            -- draw orbit
+            local angle = math.asin(2 * (circle_size) / (2 * util_math.distance(refstar.position, position)))
+            local orbit = rendering.draw_arc {
+                color = { 0.3, 0.3, 0.3, 0.3 },
+                max_radius = (util_math.distance(refstar.position, position) + 1 / 32),
+                min_radius = (util_math.distance(refstar.position, position) - 1 / 32),
+                start_angle = util_math.cart_to_pol(position).angle + angle,
+                angle = (2 * math.pi) - (2 * angle),
+                target = parent_entityPH,
+                surface = surface,
+                draw_on_ground = true,
+            }
+            orbit.move_to_back()
 
-        -- draw text
-        local displayName = rendering.draw_text {
-            color = { 1, 1, 1 },
-            text = planet.localised_name or planet.name,
-            surface = surface,
-            target = { x = planet.position.x, y = planet.position.y + circle_size+0.25 },
-            only_in_alt_mode = true,
-            scale_with_zoom = true,
-            alignment = "center"
-        }
-        
-        place_placeholder(surface, name, planet, starname, starpH)
+            -- draw text
+            local displayName = rendering.draw_text {
+                color = { 1, 1, 1 },
+                text = planet.localised_name or planet.name,
+                surface = surface,
+                target = { x = planet.position.x, y = planet.position.y + circle_size + 0.25 },
+                only_in_alt_mode = true,
+                scale_with_zoom = true,
+                alignment = "center"
+            }
+
+            place_placeholder(surface, name, planet, starname, starpH)
+        end
     end
 
     -- draw connection (on ne draw pas les connection des etoiles ou des egdes)
@@ -110,10 +112,10 @@ function starmap.createSystem(starname)
     surface.force_generate_chunk_requests()
 
     local star = surface.create_entity { type = "lamp", name = starname, position = { 0, 0 }, force = "gp-superfriendly" }
-    storage.gpuniverse[star.name]=surface.name
+    storage.gpuniverse[star.name] = surface.name
     -- draw circle around
     local circle_size = math.abs(prototypes.entity[starname].selection_box.left_top.x)
-    circle_size=circle_size + 0.3 * circle_size
+    circle_size = circle_size + 0.3 * circle_size
     local circle = rendering.draw_circle {
         color = { 1, 1, 1 },
         radius = circle_size,
@@ -129,12 +131,12 @@ function starmap.createSystem(starname)
         color = { 1, 1, 1 },
         text = star.localised_name or star.name,
         surface = surface,
-        target = { x = star.position.x, y = star.position.y + circle_size+0.25 },
+        target = { x = star.position.x, y = star.position.y + circle_size + 0.25 },
         only_in_alt_mode = true,
         scale_with_zoom = true,
         alignment = "center"
     }
-   
+
     place_placeholder(surface, starname, star, starname, star)
 end
 

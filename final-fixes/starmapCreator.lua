@@ -1,5 +1,3 @@
-local util_tooltip=require("util.tooltip")
-
 local function createPlaceHolder_starmap(planet)
     local reduce = 50
     local icons = planet.icons or { { icon = planet.icon } }
@@ -68,7 +66,6 @@ local function createPlaceHolder_starmap(planet)
             layers = starmap_icons
         },
     }
-    placeholder.custom_tooltip_fields = util_tooltip.makeTooltip(planet)
     data:extend({ placeholder })
 end
 

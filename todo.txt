@@ -1,11 +1,14 @@
 prochaine etape:
     - faire l'exeption pour les edges
-    - tooltip pour ship ?
+    - faire button pour aller dans le system
+    - catch le click alt pour renvoyer sur factoriopedia mais le bon
+    
+
+pas urgent:
+    - revoir le contains tooltip pour les planets+evolution factor+lightning
+    - trouver un moyen de sauvegarder la planet position pour le controller
     - spécifique tile pour la starmap pour prevent le build ?
 
 
 
-migrer le factoriopedia des spacelocation vers tooltipcustom avant d'affecter les enfants
-
-catch le click alt pour renvoyer sur factoriopedia mais le bon ==> ok voir player(ajouter le alt)
 

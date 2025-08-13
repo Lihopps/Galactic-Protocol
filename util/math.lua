@@ -44,4 +44,14 @@ function util_math.pol_to_cart(norme,angle) -- factorio : anti horaire et pi/2 e
   return {x=norme*math.cos(angle),y=norme*math.sin(angle)}
 end
 
+function util_math.sum_array(array,field)
+  local sum=0
+  if next(array) then
+    for _,v in pairs(array) do
+      sum=sum+v[field]
+    end
+  end
+  return sum
+end
+
 return util_math
