@@ -1,4 +1,10 @@
-require("final-fixes.star")
+require("util.randomlua")
+require("final-fixes.collector")
+
+--on creer l'univers (star planet connection etc)
+require("final-fixes.universe")
+
+--require("final-fixes.star")
 
 
 --- on met a jour le factoriopedia_description pour avoir l'arbo

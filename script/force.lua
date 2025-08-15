@@ -1,3 +1,6 @@
+local starmap=require("script.starmap.starmap")
+local playerScript=require("script.player")
+
 local force={}
 
 
@@ -21,8 +24,27 @@ local function on_tick(e)
     end
 end
 
+local function on_research_finished(e)
+    if e.research.name=="space-platform-thruster" then
+        if not game.surfaces[e.research.name] then
+            --add button starsystem
+            for _,player in pairs(e.research.force.players) do
+                playerScript.create_starSystem_button(player)
+            end
+        end
+    elseif string.find(e.research.name,"gpstar-",0,true) then
+        if not game.surfaces[e.research.name] then
+            starmap.createSystem(e.research.name)
+            for _,player in pairs(e.research.force.players) do
+                playerScript.create_starUniverse_button(player)
+            end
+        end
+    end
+end
+
 force.events={
-    [defines.events.on_tick]=on_tick
+    [defines.events.on_tick]=on_tick,
+    [defines.events.on_research_finished]=on_research_finished
 }
 
 return force

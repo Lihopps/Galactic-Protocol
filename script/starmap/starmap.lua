@@ -32,73 +32,78 @@ local starmap = {}
 local function place_placeholder(surface, Pname, parent_entityPH, starname, starpH)
     local refstar = prototypes.space_location[starname]
     local parent_data = helpers.json_to_table(prototypes.space_location[Pname].factoriopedia_description)
-    for _, name in pairs(parent_data.child) do
-        -- place child
-        local child = prototypes.space_location[name]
-        if child then
-            local position = { x = child.position.x - refstar.position.x, y = child.position.y - refstar.position.y }
-            local planet = surface.create_entity { type = "lamp", name = name, position = position, force = "gp-superfriendly" }
-            storage.gpuniverse[planet.name] = surface.name
+    if parent_data then
+        for _, name in pairs(parent_data.child) do
+            -- place child
+            local child = prototypes.space_location[name]
+            if child then
+                local position = { x = child.position.x - refstar.position.x, y = child.position.y - refstar.position.y }
+                local planet = surface.create_entity { type = "lamp", name = name, position = position, force = "gp-superfriendly" }
+                storage.gpuniverse[planet.name] = starpH
 
-            -- draw circle around
-            local circle_size = math.abs(prototypes.entity[name].selection_box.left_top.x)
-            circle_size = circle_size + 0.3 * circle_size
-            local circle = rendering.draw_circle {
-                color = { 1, 1, 1 },
-                radius = circle_size,
-                width = 2,
-                target = planet,
-                surface = surface,
-                draw_on_ground = true
-            }
-            circle.move_to_back()
+                -- draw circle around
+                local circle_size = math.abs(prototypes.entity[name].selection_box.left_top.x)
+                circle_size = circle_size + 0.3 * circle_size
+                local circle = rendering.draw_circle {
+                    color = { 1, 1, 1 },
+                    radius = circle_size,
+                    width = 2,
+                    target = planet,
+                    surface = surface,
+                    draw_on_ground = true
+                }
+                circle.move_to_back()
 
-            -- draw orbit
-            local angle = math.asin(2 * (circle_size) / (2 * util_math.distance(refstar.position, position)))
-            local orbit = rendering.draw_arc {
-                color = { 0.3, 0.3, 0.3, 0.3 },
-                max_radius = (util_math.distance(refstar.position, position) + 1 / 32),
-                min_radius = (util_math.distance(refstar.position, position) - 1 / 32),
-                start_angle = util_math.cart_to_pol(position).angle + angle,
-                angle = (2 * math.pi) - (2 * angle),
-                target = parent_entityPH,
-                surface = surface,
-                draw_on_ground = true,
-            }
-            orbit.move_to_back()
+                -- draw orbit
+                local angle = math.asin(2 * (circle_size) / (2 * util_math.distance({x=0,y=0}, position)))
+                local orbit = rendering.draw_arc {
+                    color = { 0.3, 0.3, 0.3, 0.3 },
+                    max_radius = (util_math.distance({x=0,y=0}, position) + 1 / 32),
+                    min_radius = (util_math.distance({x=0,y=0}, position) - 1 / 32),
+                    start_angle = util_math.cart_to_pol(position).angle + angle,
+                    angle = (2 * math.pi) - (2 * angle),
+                    target = parent_entityPH,
+                    surface = surface,
+                    draw_on_ground = true,
+                }
+                orbit.move_to_back()
 
-            -- draw text
-            local displayName = rendering.draw_text {
-                color = { 1, 1, 1 },
-                text = planet.localised_name or planet.name,
-                surface = surface,
-                target = { x = planet.position.x, y = planet.position.y + circle_size + 0.25 },
-                only_in_alt_mode = true,
-                scale_with_zoom = true,
-                alignment = "center"
-            }
+                -- draw text
+                local displayName = rendering.draw_text {
+                    color = { 1, 1, 1 },
+                    text = planet.localised_name or planet.name,
+                    surface = surface,
+                    target = { x = planet.position.x, y = planet.position.y + circle_size + 0.25 },
+                    only_in_alt_mode = true,
+                    scale_with_zoom = true,
+                    alignment = "center"
+                }
 
-            place_placeholder(surface, name, planet, starname, starpH)
+                place_placeholder(surface, name, planet, starname, starpH)
+            end
         end
-    end
 
-    -- draw connection (on ne draw pas les connection des etoiles ou des egdes)
-    if not string.find(Pname, "gpstar", 0, true) then
-        for _, destination in pairs(parent_data.connection) do
-            local dest = prototypes.space_location[destination]
-            local circle_size = math.abs(prototypes.entity[destination].selection_box.left_top.x)
-            circle_size = circle_size + 0.3 * circle_size
-            local circle_size1 = math.abs(parent_entityPH.prototype.selection_box.left_top.x)
-            circle_size1 = circle_size1 + 0.3 * circle_size1
-            local position = { x = dest.position.x - refstar.position.x, y = refstar.position.y - refstar.position.y }
-            local vector = util_math.normalise_vector(util_math.vector_from_pos(parent_entityPH.position, dest.position))
-            local line = rendering.draw_line {
-                color = { 1, 1, 1 },
-                width = 2,
-                from = util_math.add_vector(parent_entityPH.position, util_math.scale_vector(vector, circle_size1)),
-                to = util_math.minus_vector(dest.position, util_math.scale_vector(vector, circle_size)),
-                surface = surface
-            }
+        -- draw connection (on ne draw pas les connection des etoiles ou des egdes)
+        if not string.find(Pname, "gpstar", 0, true) then
+            for _, destination in pairs(parent_data.connection) do
+                local dest = prototypes.space_location[destination]
+                local circle_size = math.abs(prototypes.entity[destination].selection_box.left_top.x)
+                circle_size = circle_size + 0.3 * circle_size
+                local circle_size1 = math.abs(parent_entityPH.prototype.selection_box.left_top.x)
+                circle_size1 = circle_size1 + 0.3 * circle_size1
+                
+                local position = { x = dest.position.x - refstar.position.x, y = dest.position.y - refstar.position.y }
+                --local parent_entityPH_pos={ x = parent_entityPH.position.x - refstar.position.x, y = parent_entityPH.position.y - refstar.position.y }
+                
+                local vector = util_math.normalise_vector(util_math.vector_from_pos(parent_entityPH.position,position))
+                local line = rendering.draw_line {
+                    color = { 1, 1, 1 },
+                    width = 2,
+                    from = util_math.add_vector(parent_entityPH.position, util_math.scale_vector(vector, circle_size1)),
+                    to = util_math.minus_vector(position, util_math.scale_vector(vector, circle_size)),
+                    surface = surface
+                }
+            end
         end
     end
 end
@@ -112,7 +117,7 @@ function starmap.createSystem(starname)
     surface.force_generate_chunk_requests()
 
     local star = surface.create_entity { type = "lamp", name = starname, position = { 0, 0 }, force = "gp-superfriendly" }
-    storage.gpuniverse[star.name] = surface.name
+    storage.gpuniverse[star.name] = star
     -- draw circle around
     local circle_size = math.abs(prototypes.entity[starname].selection_box.left_top.x)
     circle_size = circle_size + 0.3 * circle_size
@@ -138,11 +143,76 @@ function starmap.createSystem(starname)
     }
 
     place_placeholder(surface, starname, star, starname, star)
+
+    starmap.addsystemtouniverse(star)
+end
+
+function starmap.addsystemtouniverse(star)
+    --ajoute l'etoile
+    local surface=game.surfaces["gpstar-gpuniverse"]
+    local position=util_math.scale_vector(prototypes.space_location[star.name].position,1/5)
+    local star = surface.create_entity { type = "lamp", name = star.name, position = position, force = "gp-superfriendly" }
+
+    -- draw circle around
+    local circle_size = math.abs(prototypes.entity[star.name].selection_box.left_top.x)
+    circle_size = circle_size + 0.3 * circle_size
+    local circle = rendering.draw_circle {
+        color = { 1, 1, 1 },
+        radius = circle_size,
+        width = 2,
+        target = star,
+        surface = surface,
+        draw_on_ground = true
+    }
+    circle.move_to_back()
+
+    -- draw text
+    local displayName = rendering.draw_text {
+        color = { 1, 1, 1 },
+        text = star.localised_name or star.name,
+        surface = surface,
+        target = { x = star.position.x, y = star.position.y + circle_size + 0.25 },
+        only_in_alt_mode = true,
+        scale_with_zoom = true,
+        alignment = "center"
+    }
+
+
+    --ajoute les connection si elle sont decouvertes
+    local parent_data = helpers.json_to_table(prototypes.space_location[star.name].factoriopedia_description)
+    if parent_data then
+        for _,v in pairs(parent_data.connection) do
+            local conn=surface.find_entities_filtered{name=v}
+            if #conn==1 then
+                if conn[1] and conn[1].valid then
+                    local circle_size1 = math.abs(prototypes.entity[conn[1].name].selection_box.left_top.x)
+                    circle_size1 = circle_size1 + 0.3 * circle_size1
+                    local vector = util_math.normalise_vector(util_math.vector_from_pos(star.position,conn[1].position))
+                    local line = rendering.draw_line {
+                    color = { 1, 1, 1 },
+                    width = 2,
+                    from =util_math.add_vector(star.position, util_math.scale_vector(vector, circle_size)),
+                    to = util_math.minus_vector(conn[1].position, util_math.scale_vector(vector, circle_size1)),
+                    surface = surface
+                }
+                end
+            end
+        end
+    end
+end
+
+function starmap.createUniverseMap()
+    local surface = game.create_surface("gpstar-gpuniverse", map_gen_settings)
+    surface.always_day = true
+    surface.request_to_generate_chunks({ 0, 0 }, 100)
+    surface.force_generate_chunk_requests()
 end
 
 ---Create Unviverse from prototypes
 function starmap.createUniverse()
     --TODO : starmap des stars avec liaison entre elle
+    starmap.createUniverseMap()
+
 
     -- creation du system standard
     starmap.createSystem(native_star)

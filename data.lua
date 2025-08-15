@@ -1,4 +1,4 @@
-lihop_debug=false
+lihop_debug=true
 if data.raw.planet["nauvis"] then
     data.raw.planet["nauvis"].surface_properties =
     {
@@ -9,5 +9,8 @@ if data.raw.planet["nauvis"] then
       gravity = 10
     }
 end
-
+gpbackers=table.deepcopy(require("backers"))
+require("categories.category")
 require("prototypes.platformPH")
+require("prototypes.technology")
+require("prototypes.sprite")

@@ -1,0 +1,17 @@
+-- data:extend({
+--     {
+--         type = "technology",
+--         name = "gpstar-calidus",
+--         localised_name = { "technology-name.lihop-system-discovery", "" },
+--         localised_description = { "technology-description.help-discovery", "" },
+--         icons = util_graphics.sptechnology_icon_constant_planet(etoile.icons),
+--         icon_size = 256,
+--         essential = true,
+--         effects = effect,
+--         prerequisites = { "rocket-silo" },
+--         research_trigger = {
+--             type = "send-item-to-orbit",
+--             item = "iron-plate"
+--         }
+--     }
+-- })

@@ -1,0 +1,194 @@
+local util_math = require("util.math")
+
+local uCreator = {}
+
+function uCreator.get_final_pos(gen,possible_distance, max_planets)
+    local final_pos={}
+    for i=1,max_planets do
+        local index=gen:random(1,#possible_distance)
+        table.insert(final_pos,possible_distance[index])
+        table.remove(possible_distance,index)
+    end
+    final_sort=table.sort(final_pos)
+    return final_pos
+end
+
+function uCreator.make_final_coord(parent_pos, child_pos)
+    -- Convert both to Cartesian
+    local base_cart = util_math.fpol_to_cart(parent_pos)
+    local rel_cart  = util_math.fpol_to_cart(child_pos)
+
+    -- Add vectors
+    local sum_cart  = {
+        x = base_cart.x + rel_cart.x,
+        y = base_cart.y + rel_cart.y
+    }
+
+    -- Convert back to polar from origin
+    return util_math.cart_to_fpol(sum_cart)
+end
+
+function uCreator.get_name(gen)
+    local index = gen:random(1, #gpbackers)
+    local name = gpbackers[index]
+    --table.remove(gpbackers,index)
+    return name
+end
+
+function uCreator.create_system_location(max_system, gen)
+    local points_cart = {{ position={ x = 0, y = 0 } }}
+    local max = 0
+    while #points_cart < max_system and max < 5000 do
+        local new_point = {position={ x = gen:random(-500, 500), y = gen:random(-500, 500) }}
+        local overlap = false
+        for _, point in pairs(points_cart) do
+            if util_math.distance(new_point.position, point.position) < (50 + 50 + 2) then
+                overlap = true
+                break
+            end
+        end
+        max = max + 1
+        if not overlap then
+            table.insert(points_cart, new_point)
+            max = 0
+        end
+    end
+    log(#points_cart .. "/" .. max_system)
+    return points_cart
+end
+
+local function make_supertriangle(star_position, state)
+    local offset = 2
+    local d = 500
+    if state == 1 then
+        d = 1000
+    end
+
+    local dist = d --(d/math.cos(math.pi/3))+offset
+    local position = util_math.fpol_to_cart({ distance = dist, angle = 0 })
+    position = util_math.add_vector(star_position, position)
+    local point_A = {
+        position = position, --cartesian position in system
+        name = "point_A",
+    }
+    position = util_math.fpol_to_cart({ distance = dist, angle = 0.66 })
+    position = util_math.add_vector(star_position, position)
+    local point_B = {
+        position = position, --cartesian position in system
+        name = "point_B",
+    }
+    position = util_math.fpol_to_cart({ distance = dist, angle = 0.33 })
+    position = util_math.add_vector(star_position, position)
+    local point_C = {
+        position = position, --cartesian position in system
+        name = "point_C",
+    }
+
+    return { name = point_A.name .. "-" .. point_B.name .. "-" .. point_C.name, sommet = { point_A, point_B, point_C }, edge = { { point_A, point_B }, { point_B, point_C }, { point_C, point_A } } }
+end
+
+local function cercle_circonscrit(triangle)
+    local pa = triangle.sommet[1]
+    local pb = triangle.sommet[2]
+    local pc = triangle.sommet[3]
+
+    local delta = util_math.determiant(pa.position.x, pa.position.y, 1, pb.position.x, pb.position.y, 1, pc.position.x,
+        pc.position.y, 1)
+    local a = pa.position.x * pa.position.x + pa.position.y * pa.position.y
+    local d = pb.position.x * pb.position.x + pb.position.y * pb.position.y
+    local g = pc.position.x * pc.position.x + pc.position.y * pc.position.y
+    local x = (1 / (2 * delta)) * util_math.determiant(a, pa.position.y, 1, d, pb.position.y, 1, g, pc.position.y, 1)
+    local y = -(1 / (2 * delta)) * util_math.determiant(a, pa.position.x, 1, d, pb.position.x, 1, g, pc.position.x, 1)
+    local centre = { x = x, y = y }
+    local rayon = (util_math.distance2(pa, pb) * util_math.distance2(pb, pc) * util_math.distance2(pc, pa)) / (2 * delta)
+    return { position = centre, rayon = rayon }
+end
+
+function uCreator.triangulation(star_position, system, state)
+    local supertriangle = make_supertriangle(star_position, state)
+    local triangles = { supertriangle }
+    local points = system--table.deepcopy(system)
+
+    for _, sommet in pairs(points) do
+        local badTriangles = {}
+        local polygon = {}
+        for _, triangle in pairs(triangles) do
+            local cercle_data = cercle_circonscrit(triangle)
+            if util_math.in_circle(sommet, cercle_data) then
+                table.insert(badTriangles, triangle)
+                for _, edge in pairs(triangle.edge) do
+                    table.insert(polygon, edge)
+                end
+            end
+        end
+
+        for _, tri in pairs(badTriangles) do
+            for j = #triangles, 1, -1 do
+                if tri.name == triangles[j].name then
+                    table.remove(triangles, j)
+                end
+            end
+        end
+        --log(serpent.block(polygon))
+        for _, edge in pairs(polygon) do
+            local triangle = {
+                name = sommet.name .. "-" .. edge[1].name .. "-" .. edge[2].name,
+                sommet = {
+                    sommet, edge[1], edge[2]
+                },
+                edge = {
+                    { sommet,  edge[1] },
+                    { edge[1], edge[2] },
+                    { edge[2], sommet }
+                }
+            }
+            table.insert(triangles, triangle)
+        end
+    end
+    --serpent.block(triangles))
+    local final_triangles = {}
+    for _, triangle in pairs(triangles) do
+        if not string.match(triangle.name, "point_") then
+            table.insert(final_triangles, triangle)
+        end
+    end
+    --log(serpent.block(final_triangles))
+    return final_triangles
+end
+
+function uCreator.make_final_routes(space_routes)
+    local final_routes = {}
+    for _, triangle in pairs(space_routes) do
+        for _, edge in pairs(triangle.edge) do
+            for _, route in pairs(final_routes) do
+                if (edge[1].name == route[1].name and edge[2].name == route[2].name) or (edge[1].name == route[2].name and edge[2].name == route[1].name) then
+                    goto pass2
+                end
+            end
+            table.insert(final_routes, edge)
+            ::pass2::
+        end
+    end
+    return final_routes
+end
+
+function uCreator.create_system_connection(star_position, system)
+    --local connection={} --array of {edge1,edge2}
+    local space_routes = uCreator.triangulation(star_position, system, 0)
+    local final_space_route = uCreator.make_final_routes(space_routes)
+    return final_space_route
+
+    --return connection
+end
+
+function uCreator.create_universe_connection(system_spot,galaxy_objects)
+    local system={}
+    for _,sys in pairs(galaxy_objects) do
+        table.insert(system,sys[0])
+    end
+    local space_routes = uCreator.triangulation({x=0,y=0}, system, 1)
+    local final_space_route = uCreator.make_final_routes(space_routes)
+    return final_space_route
+end
+
+return uCreator

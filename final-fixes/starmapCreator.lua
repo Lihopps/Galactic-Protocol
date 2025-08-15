@@ -3,9 +3,9 @@ local function createPlaceHolder_starmap(planet)
     local icons = planet.icons or { { icon = planet.icon } }
     local starmap_icons = nil
     local magnitude = 1
+    local tint=nil
     if planet.starmap_icons then
         starmap_icons = table.deepcopy(planet.starmap_icons)
-
         for k, layer in pairs(starmap_icons) do
             if layer.icon_size * planet.magnitude * (reduce / layer.icon_size) > magnitude then
                 magnitude = layer.icon_size * planet.magnitude * (reduce / layer.icon_size)
@@ -25,7 +25,8 @@ local function createPlaceHolder_starmap(planet)
                 priority = "high",
                 width = planet.starmap_icon_size,
                 height = planet.starmap_icon_size,
-                scale = planet.magnitude * (reduce / planet.starmap_icon_size)
+                scale = planet.magnitude * (reduce / planet.starmap_icon_size),
+                tint=tint
             }
         }
     else
@@ -36,7 +37,8 @@ local function createPlaceHolder_starmap(planet)
                 priority = "high",
                 width = 64,
                 height = 64,
-                scale = planet.magnitude * (reduce / 64)
+                scale = planet.magnitude * (reduce / 64),
+                tint=tint
             }
         }
     end
@@ -47,7 +49,7 @@ local function createPlaceHolder_starmap(planet)
     {
         type = "lamp",
         name = planet.name,
-        localised_name = { "space-location-name." .. planet.name } or planet.localised_name or planet.name,
+        localised_name = planet.localised_name or { "space-location-name." .. planet.name } or planet.name,
         localised_description = { "space-location-description." .. planet.name },
         icons = icons,
         flags = { "placeable-neutral", "player-creation", "placeable-off-grid" },
@@ -63,7 +65,7 @@ local function createPlaceHolder_starmap(planet)
         },
         picture_on =
         {
-            layers = starmap_icons
+            layers = starmap_icons,
         },
     }
     data:extend({ placeholder })

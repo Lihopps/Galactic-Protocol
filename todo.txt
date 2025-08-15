@@ -1,10 +1,12 @@
+pour l'universe:
+    
+
 prochaine etape:
     - faire l'exeption pour les edges
-    - faire button pour aller dans le system
-    - catch le click alt pour renvoyer sur factoriopedia mais le bon
     
 
 pas urgent:
+    - localisation
     - revoir le contains tooltip pour les planets+evolution factor+lightning
     - trouver un moyen de sauvegarder la planet position pour le controller
     - spécifique tile pour la starmap pour prevent le build ?

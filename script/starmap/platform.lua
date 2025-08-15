@@ -14,7 +14,7 @@ local function createPlatformPh(platform)
     else
         return
     end
-    local ship=game.surfaces[surface].create_entity{type="lamp",name="spaceshipph",position=position,force="gp-superfriendly"}
+    local ship=game.surfaces[surface.name].create_entity{type="lamp",name="spaceshipph",position=position,force="gp-superfriendly"}
     storage.gpplatform[platform.index]=ship
     storage.gpship[ship.unit_number]=platform
 end
