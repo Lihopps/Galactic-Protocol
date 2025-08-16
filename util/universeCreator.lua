@@ -191,4 +191,60 @@ function uCreator.create_universe_connection(system_spot,galaxy_objects)
     return final_space_route
 end
 
+function uCreator.switch_planet(gen,system,planet)
+    local fstar=0
+    local fplanet=2
+    local fconn=3
+    for index,dat in ipairs(system) do
+        if dat.type=="space-connection" then
+            fconn=index
+            break
+        end
+    end
+    local planet_index=gen:random(fplanet,fconn-1)
+    if gpPlanetCollector.modded.planet[system[planet_index].name] then
+        log("essai de changement d'un planet modded")
+        uCreator.switch_planet(gen,system,planet)
+    end
+    
+    local pname=system[planet_index].name
+    planet.distance=system[planet_index].distance
+    planet.orientation=system[planet_index].orientation
+    planet.subgroup=system[planet_index].subgroup
+    planet.order=system[planet_index].order
+    table.remove(system,planet_index)
+    table.insert(system,planet_index,planet)
+
+
+    for i=1,#gptree[system[0].name].child do
+        if gptree[system[0].name].child[i]==pname then
+            table.remove(gptree[system[0].name].child,i)
+            table.insert(gptree[system[0].name].child,planet.name)
+        end
+    end
+
+
+    for i=fconn,#system do
+        if system[i].type=="space-connection" then
+            if system[i].from==pname then
+                system[i].from=planet.name
+                system[i].name=planet.name.."-to-"..system[i].to
+            end
+            if system[i].to==pname then
+                system[i].to=planet.name
+                system[i].name=system[i].from.."-to-"..planet.name
+            end
+        end
+    end
+
+    for _,effect in pairs(system[#system].effects) do
+        if effect.type == "unlock-space-location" then
+            if effect.space_location==pname then
+                effect.space_location=planet.name
+            end
+        end
+    end 
+
+end
+
 return uCreator

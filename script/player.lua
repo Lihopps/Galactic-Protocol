@@ -15,14 +15,16 @@ local function on_player_changed_surface(e)
                 player.game_view_settings.show_shortcut_bar=false
                 player.game_view_settings.show_crafting_queue=false
                 player.game_view_settings.show_tool_bar=false
+                player.game_view_settings.show_entity_tooltip=false
             else
                 player.game_view_settings.show_entity_info=true
                 player.game_view_settings.show_map_view_options=true
                 player.game_view_settings.show_quickbar=true
-                player.game_view_settings.show_minimap=false
+                player.game_view_settings.show_minimap=true
                 player.game_view_settings.show_shortcut_bar=true
                 player.game_view_settings.show_crafting_queue=true
                 player.game_view_settings.show_tool_bar=true
+                player.game_view_settings.show_entity_tooltip=true
             end
         end
     end
@@ -30,7 +32,7 @@ end
 
 local function on_gui_opened(e)
     if e.entity and e.entity.valid then
-        if e.entity.type=="lamp" then
+        if e.entity.type=="roboport" then
             if prototypes.space_location[e.entity.name] then
                 game.players[e.player_index].opened=nil
                 if game.planets[e.entity.name] then
@@ -50,7 +52,7 @@ end
 local function custom_input(e)
     if e.input_name=="open-custom-PLANET" then
         if e.selected_prototype then
-            if e.selected_prototype.base_type=="entity" and e.selected_prototype.derived_type=="lamp" then
+            if e.selected_prototype.base_type=="entity" and e.selected_prototype.derived_type=="roboport" then
                 if prototypes.space_location[e.selected_prototype.name] then
                     game.players[e.player_index].open_factoriopedia_gui(prototypes.space_location[e.selected_prototype.name])
                 end
@@ -70,7 +72,13 @@ local function open_star_system(e)
 end
 
 local function open_star_universe(e)
-    
+    local play=game.players[e.player_index]
+    local surface=play.physical_surface
+    if surface.planet then
+        play.centered_on=storage.gpuniverse["gp-universe"]
+    else
+        game.print("oune PB")
+    end
 end
 
 function player.create_starSystem_button(player)
@@ -84,7 +92,7 @@ function player.create_starSystem_button(player)
                     sprite = "starmapsystem",
                     style_mods = { size = { 37, 37 } },
                     name = "gpstarSystem",
-                    tooltip = { "gui.open-lpn-gui-manager" },
+                    tooltip = { "gui.open-systemMap" },
                     handler = { [defines.events.on_gui_click] = open_star_system },
                 },
             })
@@ -103,7 +111,7 @@ function player.create_starUniverse_button(player)
                     sprite = "starmapsystem",
                     style_mods = { size = { 37, 37 } },
                     name = "gpstarUniverse",
-                    tooltip = { "gui.open-lpn-gui-manager" },
+                    tooltip = { "gui.open-universeMap" },
                     handler = { [defines.events.on_gui_click] = open_star_universe },
                 },
             })

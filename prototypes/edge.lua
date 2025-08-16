@@ -11,7 +11,7 @@ function edge.create_edge(etoile)
 
     type = "space-location",
     name = etoile.name.."-system-edge",
-    --localised_name=(name=="calidus" and "Calidus") or name,
+    localised_name={"gui.edgenamefromstar",etoile.name},
     icons = {
         {
             icon = "__zzz-GalacticProtocol__/graphics/icons/solar-system-edge.png",

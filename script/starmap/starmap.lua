@@ -31,14 +31,14 @@ local starmap = {}
 ---@param starpH LuaEntity : star reference placeholder
 local function place_placeholder(surface, Pname, parent_entityPH, starname, starpH)
     local refstar = prototypes.space_location[starname]
-    local parent_data = helpers.json_to_table(prototypes.space_location[Pname].factoriopedia_description)
+    local parent_data =prototypes.mod_data["gptree"].data[Pname]
     if parent_data then
         for _, name in pairs(parent_data.child) do
             -- place child
             local child = prototypes.space_location[name]
             if child then
                 local position = { x = child.position.x - refstar.position.x, y = child.position.y - refstar.position.y }
-                local planet = surface.create_entity { type = "lamp", name = name, position = position, force = "gp-superfriendly" }
+                local planet = surface.create_entity { type = "roboport", name = name, position = position, force = "player" }
                 storage.gpuniverse[planet.name] = starpH
 
                 -- draw circle around
@@ -110,13 +110,13 @@ end
 
 ---Create surface and place placeholder for system
 ---@param starname string : name of star system
-function starmap.createSystem(starname)
+---@param fisrt boolean : is the first ?
+function starmap.createSystem(starname,first)
     local surface = game.create_surface(starname, map_gen_settings)
     surface.always_day = true
-    surface.request_to_generate_chunks({ 0, 0 }, 100)
-    surface.force_generate_chunk_requests()
+    game.forces["player"].chart_all(surface)
 
-    local star = surface.create_entity { type = "lamp", name = starname, position = { 0, 0 }, force = "gp-superfriendly" }
+    local star = surface.create_entity { type = "roboport", name = starname, position = { 0, 0 }, force = "player" }
     storage.gpuniverse[star.name] = star
     -- draw circle around
     local circle_size = math.abs(prototypes.entity[starname].selection_box.left_top.x)
@@ -144,14 +144,15 @@ function starmap.createSystem(starname)
 
     place_placeholder(surface, starname, star, starname, star)
 
-    starmap.addsystemtouniverse(star)
+    starmap.addsystemtouniverse(star,first)
+   
 end
 
-function starmap.addsystemtouniverse(star)
+function starmap.addsystemtouniverse(star,first)
     --ajoute l'etoile
     local surface=game.surfaces["gpstar-gpuniverse"]
     local position=util_math.scale_vector(prototypes.space_location[star.name].position,1/5)
-    local star = surface.create_entity { type = "lamp", name = star.name, position = position, force = "gp-superfriendly" }
+    local star = surface.create_entity { type = "roboport", name = star.name, position = position, force = "player" }
 
     -- draw circle around
     local circle_size = math.abs(prototypes.entity[star.name].selection_box.left_top.x)
@@ -179,7 +180,7 @@ function starmap.addsystemtouniverse(star)
 
 
     --ajoute les connection si elle sont decouvertes
-    local parent_data = helpers.json_to_table(prototypes.space_location[star.name].factoriopedia_description)
+    local parent_data = prototypes.mod_data["gptree"].data[star.name]
     if parent_data then
         for _,v in pairs(parent_data.connection) do
             local conn=surface.find_entities_filtered{name=v}
@@ -199,13 +200,14 @@ function starmap.addsystemtouniverse(star)
             end
         end
     end
+    if first then storage.gpuniverse["gp-universe"]=star end
 end
 
 function starmap.createUniverseMap()
     local surface = game.create_surface("gpstar-gpuniverse", map_gen_settings)
     surface.always_day = true
-    surface.request_to_generate_chunks({ 0, 0 }, 100)
-    surface.force_generate_chunk_requests()
+    game.forces["player"].chart_all(surface)
+
 end
 
 ---Create Unviverse from prototypes
@@ -215,7 +217,7 @@ function starmap.createUniverse()
 
 
     -- creation du system standard
-    starmap.createSystem(native_star)
+    starmap.createSystem(native_star,true)
 end
 
 return starmap

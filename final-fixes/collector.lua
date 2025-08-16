@@ -8,7 +8,6 @@ local vanilla_corpse = {
         ["shattered-planet"] = true, --TODO a voir si on le mets a part
 }
 
-
 --definition de la table qui recupere toutes les planets,connection etc
 gpPlanetCollector = {
     vanilla = {
@@ -20,8 +19,7 @@ gpPlanetCollector = {
         planet = {},
         ["space-location"] = {},
         connection={}
-    },
-    
+    },  
 }
 
 -- on recupere planet et space location

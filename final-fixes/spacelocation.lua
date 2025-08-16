@@ -25,7 +25,8 @@ function spacelocationfinalupdate.updateArbo(planet)
         })
     end
     local connection=build_connection(planet.name)
-    planet.factoriopedia_description=helpers.table_to_json({child={},connection=connection})
+    --planet.factoriopedia_description=helpers.table_to_json({child={},connection=connection})
+    gptree[planet.name]={child={},connection=connection}
 end
 
 return spacelocationfinalupdate

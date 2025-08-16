@@ -10,6 +10,7 @@ if data.raw.planet["nauvis"] then
     }
 end
 gpbackers=table.deepcopy(require("backers"))
+gptree={}
 require("categories.category")
 require("prototypes.platformPH")
 require("prototypes.technology")

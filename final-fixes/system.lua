@@ -6,7 +6,6 @@ local edgeCreator = require("prototypes.edge")
 local planetCreator = require("prototypes.planet")
 local systemCreator = {}
 
-
 local function unlock_system(etoile, system)
     local effect = {}
     table.insert(effect, {
@@ -22,11 +21,12 @@ local function unlock_system(etoile, system)
                 use_icon_overlay_constant = true
             })
     end
-    table.insert(effect, {
-        type = "unlock-space-location",
-        space_location = etoile.name .. "-system-edge",
-        use_icon_overlay_constant = true
-    })
+    table.insert(effect,
+        {
+            type = "unlock-space-location",
+            space_location = etoile.name .. "-system-edge",
+            use_icon_overlay_constant = true
+        })
     local tech = {
         type = "technology",
         name = etoile.name,
@@ -69,9 +69,11 @@ function systemCreator.create_vanilla_system(pos)
             end
         end
     end
-    etoile.factoriopedia_description = helpers.table_to_json({ child = children, connection = {} }),
-        --log(helpers.table_to_json({child=children,connection={}}))
-    table.insert(system,0, etoile)
+
+    
+    --etoile.factoriopedia_description = helpers.table_to_json({ child = children, connection = {} })
+    gptree[etoile.name]={ child = children, connection = {} }
+    table.insert(system, 0, etoile)
     table.insert(system, {
         type = "space-connection",
         name = "gpstar-calidus-to-vulcanus",
@@ -93,12 +95,12 @@ function systemCreator.create_vanilla_system(pos)
 end
 
 function systemCreator.create_system(index, name, pos)
-    local possible_distance = {10, 15, 20, 25, 30, 35, 40 }
+    local possible_distance = { 10, 15, 20, 25, 30, 35, 40 }
     local gen = mwc(util_math.hash(name))
     local system = {}
     local position = util_math.cart_to_fpol(pos)
     local max_planets = gen:random(2, 8)
-    log("max: "..max_planets)
+    log("max: " .. max_planets)
     local final_pos = uCreator.get_final_pos(gen, possible_distance, max_planets)
     local children = {}
 
@@ -111,18 +113,23 @@ function systemCreator.create_system(index, name, pos)
         planet.subgroup = "gpstar-" .. name
         planet.order = tostring(i)
         planet.position = util_math.fpol_to_cart({ distance = planet.distance, orientation = planet.orientation })
-        table.insert(children, planet.name)
-        table.insert(system, planet)
+        if planet then
+            table.insert(children, planet.name)
+            table.insert(system, planet)
+        else
+            log("Attention :" ..pname.."is nil !!")
+        end
     end
-    table.insert(children,etoile.name.."-system-edge")
-    etoile.factoriopedia_description = helpers.table_to_json({ child = children, connection = {} })
-    
+    table.insert(children, etoile.name .. "-system-edge")
+    --etoile.factoriopedia_description = helpers.table_to_json({ child = children, connection = {} })
+    gptree[etoile.name]={ child = children, connection = {} }
+
     local tech = unlock_system(etoile, system)
     local connection = uCreator.create_system_connection(pos, system)
-    log(serpent.block(connection))
+    --log(serpent.block(connection))
     -- si que deux astres les relier entre eux
-    if #system==2 then
-        table.insert(connection,{system[1],system[2]})
+    if #system == 2 then
+        table.insert(connection, { system[1], system[2] })
     end
 
 
@@ -131,7 +138,7 @@ function systemCreator.create_system(index, name, pos)
     table.insert(system,
         {
             type = "space-connection",
-            name = system[2].name .. "-to-" ..etoile.name,
+            name = system[2].name .. "-to-" .. etoile.name,
             subgroup = "gpstar-" .. name,
             from = system[2].name,
             to = etoile.name,
@@ -141,13 +148,13 @@ function systemCreator.create_system(index, name, pos)
     table.insert(system,
         {
             type = "space-connection",
-            name = system[#system - 2].name .. "-to-" .. system[#system-1].name,
+            name = system[#system - 2].name .. "-to-" .. system[#system - 1].name,
             subgroup = "gpstar-" .. name,
             from = system[#system - 2].name,
-            to = system[#system-1].name,
-            order = "z" .. system[#system-1].order,
+            to = system[#system - 1].name,
+            order = "z" .. system[#system - 1].order,
             need_spanwdef = true,
-            length=100000
+            length = 100000
         })
     for _, edge in pairs(connection) do
         table.insert(system,

@@ -34,7 +34,7 @@ local function data_display_collector(entity)
         local platform=storage.gpship[entity.unit_number]
         local data=util_tooltip.make_platform_Tooltip(platform)
         return {data,{"",{"surface-name.space-platform"}," ",platform.name}}
-    elseif entity.type=="lamp" and prototypes.space_location[entity.name] then 
+    elseif entity.type=="roboport" and prototypes.space_location[entity.name] then 
         --collect data for planet and star
         local data=util_tooltip.make_corps_Tooltip(prototypes.space_location[entity.name])
         return {data,{"?",entity.localised_name,entity.name}}
@@ -53,11 +53,10 @@ local function on_selected_entity_changed(e)
         end
         create_custom_tooltip(player, entity,data_display_collector(entity),tag_type)
         storage.players_custom_tooltip[player.index] = true
-        player.game_view_settings.show_entity_tooltip=false
+        
     else
         destroy_custom_tooltip(player)
         storage.players_custom_tooltip[player.index] = nil
-        player.game_view_settings.show_entity_tooltip=true
     end
 end
 

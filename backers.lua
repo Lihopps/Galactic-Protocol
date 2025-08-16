@@ -712,7 +712,7 @@ local backers={
 "Defender833",
 "Defianz",
 "Defty83",
-"DegaDahega[Magix39]",
+"DegaDahegaMagix39",
 "DelaneyTenebrae",
 "delaytime0",
 "Deli_SK",
@@ -1919,7 +1919,7 @@ local backers={
 "MathiasStabell",
 "MathieuGarstecki",
 "MatLaPatate,earlytester",
-"Matrox[FX1]",
+"MatroxFX1",
 "Matt",
 "MattFuriousFreeman",
 "MattLXKMShaw",
@@ -2181,7 +2181,7 @@ local backers={
 "NicolastheHamstroll",
 "NielsdeRoo",
 "NigelGoodman",
-"NightFireNavy[NINA]",
+"NightFireNavyNINA",
 "NightfireZero0",
 "NightwindLorr",
 "Nightwolfy13",
@@ -2799,7 +2799,7 @@ local backers={
 "Spladex",
 "SplittingMnut",
 "Spokig",
-"SponsoredbyTamtooe[Wroclove]",
+"SponsoredbyTamtooeWroclove",
 "SPOON1982",
 "Sporling",
 "spynet1966",
@@ -3019,7 +3019,7 @@ local backers={
 "ThomasWoods",
 "ThoreEEngel",
 "ThorgeirMarthinussen",
-"ThorkildAAndersen[Multivers]",
+"ThorkildAAndersenMultivers",
 "ThorstenStanitzok",
 "Thr3d",
 "ThreeSevenths",
@@ -3061,7 +3061,7 @@ local backers={
 "Toawa",
 "TobiasBliksrud",
 "TobiasFranke",
-"TobiasGMf6h[DKCCP]BassDominator",
+"TobiasGMf6hDKCCPBassDominator",
 "TobiasLf6fling",
 "TobiasMilde",
 "TodesKiowa",
@@ -3387,7 +3387,7 @@ local backers={
 "ZpixThaTurtle",
 "Zxypher",
 "zyxep",
-"[FR]LdtSten"
+"FRLdtSten"
 }
 
 return backers

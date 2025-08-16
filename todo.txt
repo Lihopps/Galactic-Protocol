@@ -1,11 +1,13 @@
-pour l'universe:
-    
-
 prochaine etape:
-    - faire l'exeption pour les edges
+    - integration planet modded
+    - tweak planet
+    - tech tree from route for system
+    - gui pour spaceplatform
+    - settings for generation
     
-
 pas urgent:
+    - a voir si on peut pas faire chart la force allié 
+    - definir la victoire
     - localisation
     - revoir le contains tooltip pour les planets+evolution factor+lightning
     - trouver un moyen de sauvegarder la planet position pour le controller

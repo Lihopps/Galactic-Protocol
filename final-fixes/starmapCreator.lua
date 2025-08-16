@@ -1,6 +1,6 @@
 local function createPlaceHolder_starmap(planet)
     local reduce = 50
-    local icons = planet.icons or { { icon = planet.icon } }
+    local icons = planet.icons or { { icon = planet.icon,icon_size = planet.icon_size } }
     local starmap_icons = nil
     local magnitude = 1
     local tint=nil
@@ -26,7 +26,7 @@ local function createPlaceHolder_starmap(planet)
                 width = planet.starmap_icon_size,
                 height = planet.starmap_icon_size,
                 scale = planet.magnitude * (reduce / planet.starmap_icon_size),
-                tint=tint
+                tint=tint,
             }
         }
     else
@@ -38,7 +38,7 @@ local function createPlaceHolder_starmap(planet)
                 width = 64,
                 height = 64,
                 scale = planet.magnitude * (reduce / 64),
-                tint=tint
+                tint=tint,
             }
         }
     end
@@ -47,7 +47,7 @@ local function createPlaceHolder_starmap(planet)
 
     local placeholder =
     {
-        type = "lamp",
+        type = "roboport",
         name = planet.name,
         localised_name = planet.localised_name or { "space-location-name." .. planet.name } or planet.name,
         localised_description = { "space-location-description." .. planet.name },
@@ -58,12 +58,22 @@ local function createPlaceHolder_starmap(planet)
         always_on = true,
         hidden = true,
         hidden_in_factoriopedia = true,
-        energy_usage_per_tick = "0.01W",
+        energy_usage = "0.01W",
+        recharge_minimum="0.01W",
+        robot_slots_count=0,
+        material_slots_count=0,
+        request_to_open_door_timeout=0,
+        radar_range=3,
+        spawn_and_station_height=0,
+        charge_approach_distance=0,
+        logistics_radius=0,
+        construction_radius=0,
+        charging_energy="0W",
         energy_source =
         {
             type = "void",
         },
-        picture_on =
+        base =
         {
             layers = starmap_icons,
         },

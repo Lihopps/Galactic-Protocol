@@ -35,6 +35,6 @@ for name, prototype in pairs(data.raw["space-connection"]) do
 
 
     if lihop_debug then
-        prototype.length=1000
+        prototype.length=3000
     end
 end
