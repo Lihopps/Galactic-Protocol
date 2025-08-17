@@ -16,6 +16,13 @@ local spacelocationfinalupdate=require("final-fixes.spacelocation")
 for planet_name, planet in pairs(data.raw["planet"]) do
    spacelocationfinalupdate.updateArbo(planet)
 end
+for planet_name, planet in pairs(data.raw["space-location"]) do
+   if not string.find(planet_name,"space-location-unknown",0,true) and not string.find(planet_name,"shattered-planet",0,true) then
+      if not string.find(planet_name,"gpstar-",0,true) and not string.find(planet_name,"-system-edge",0,true) then
+         spacelocationfinalupdate.updateArbo(planet)
+      end
+   end
+end
 
 
 -- envoi vers control stage

@@ -1,6 +1,8 @@
 local mod_gui = require("__core__.lualib.mod-gui")
 local gui = require("__flib__.gui")
 
+local platformCreatorGUI=require("script.platformCreatorGUI")
+
 local player={}
 
 local function on_player_changed_surface(e)
@@ -61,6 +63,11 @@ local function custom_input(e)
     end
 end
 
+local function open_star_platform(e)
+    local play=game.players[e.player_index]
+    platformCreatorGUI.create_platformCreatorGUI(play)
+end
+
 local function open_star_system(e)
     local play=game.players[e.player_index]
     local surface=play.physical_surface
@@ -119,6 +126,25 @@ function player.create_starUniverse_button(player)
     end
 end
 
+function player.create_starPlatform_button(player)
+    local flow = mod_gui.get_button_flow(player)
+    if flow then
+        if not flow["gpstarPlatform"] then
+            local button = gui.add(mod_gui.get_button_flow(player), {
+                {
+                    type = "sprite-button",
+                    style = "frame_action_button",
+                    sprite = "starmapsystem",
+                    style_mods = { size = { 37, 37 } },
+                    name = "gpstarPlatform",
+                    tooltip = { "gui.open-platform" },
+                    handler = { [defines.events.on_gui_click] = open_star_platform },
+                },
+            })
+        end
+    end
+end
+
 player.events={
     [defines.events.on_player_changed_surface]=on_player_changed_surface,
     [defines.events.on_gui_opened]=on_gui_opened,
@@ -127,7 +153,8 @@ player.events={
 
 gui.add_handlers({
     open_star_system = open_star_system,
-    open_star_universe=open_star_universe
+    open_star_universe=open_star_universe,
+    open_star_platform=open_star_platform
 })
 
 return player

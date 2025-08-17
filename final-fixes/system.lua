@@ -20,6 +20,14 @@ local function unlock_system(etoile, system)
                 space_location = planet.name,
                 use_icon_overlay_constant = true
             })
+        for _,moon in pairs(gptree[planet.name].child) do
+            table.insert(effect,
+            {
+                type = "unlock-space-location",
+                space_location = moon,
+                use_icon_overlay_constant = true
+            })
+        end
     end
     table.insert(effect,
         {
@@ -66,6 +74,7 @@ function systemCreator.create_vanilla_system(pos)
                 entity.subgroup = "gpstar-calidus"
                 table.insert(children, entity.name)
                 table.insert(system, entity)
+                gptree[entity.name]={child={},connection={}}
             end
         end
     end
@@ -73,7 +82,7 @@ function systemCreator.create_vanilla_system(pos)
     
     --etoile.factoriopedia_description = helpers.table_to_json({ child = children, connection = {} })
     gptree[etoile.name]={ child = children, connection = {} }
-    table.insert(system, 0, etoile)
+    table.insert(system, 1, etoile)
     table.insert(system, {
         type = "space-connection",
         name = "gpstar-calidus-to-vulcanus",
@@ -98,6 +107,7 @@ function systemCreator.create_system(index, name, pos)
     local possible_distance = { 10, 15, 20, 25, 30, 35, 40 }
     local gen = mwc(util_math.hash(name))
     local system = {}
+    --local moons={}
     local position = util_math.cart_to_fpol(pos)
     local max_planets = gen:random(2, 8)
     log("max: " .. max_planets)
@@ -109,13 +119,40 @@ function systemCreator.create_system(index, name, pos)
         local pname = uCreator.get_name(gen)
         local planet_position = uCreator.make_final_coord(position,
             { distance = final_pos[i], orientation = util_math.map(gen:random(), 0, 1, 0, 0.5) })
-        local planet = planetCreator.create_planet(i, name, planet_position, pname)
+        local planet = planetCreator.create_planet(i, etoile,final_pos[i], planet_position, pname)
         planet.subgroup = "gpstar-" .. name
         planet.order = tostring(i)
         planet.position = util_math.fpol_to_cart({ distance = planet.distance, orientation = planet.orientation })
         if planet then
             table.insert(children, planet.name)
             table.insert(system, planet)
+            gptree[planet.name]={child={},connection={}}
+            -- moon ?
+            if planet.moon_number then
+                if planet.moon_number>0 then
+                    for j=1,planet.moon_number do
+                        local pname = uCreator.get_name(gen)
+                        local moon_position = uCreator.make_final_coord(planet_position,{ distance = 2+j, orientation =gen:random()})
+                        local moon = planetCreator.create_planet(i, etoile,final_pos[i], moon_position, pname,true)
+                        moon.subgroup = "gpstar-" .. name
+                        moon.order = tostring(i)..tostring(j)
+                        moon.position = util_math.fpol_to_cart({ distance = moon.distance, orientation = moon.orientation })
+                        if moon then
+                            table.insert(gptree[planet.name].child,moon.name)
+                            gptree[moon.name]={child={},connection={}}
+                            data:extend({moon,{
+                                type = "space-connection",
+                                name = planet.name .. "-to-" .. moon.name,
+                                subgroup = "gpstar-" .. name,
+                                from = planet.name,
+                                to = moon.name,
+                                order = planet.name.."z" .. etoile.order,
+                                need_spanwdef = true
+                            }})
+                        end
+                    end
+                end
+            end
         else
             log("Attention :" ..pname.."is nil !!")
         end
@@ -133,7 +170,7 @@ function systemCreator.create_system(index, name, pos)
     end
 
 
-    table.insert(system, 0, etoile)
+    table.insert(system, 1, etoile)
     table.insert(system, edgeCreator.create_edge(etoile))
     table.insert(system,
         {

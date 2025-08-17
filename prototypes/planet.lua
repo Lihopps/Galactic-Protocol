@@ -2,19 +2,59 @@ local util_math=require("util.math")
 local uCreator=require("util.universeCreator")
 local planetCreator={}
 
-local function make_solid_planet(index,starname,position,planetname)
-    local gen=mwc(util_math.hash(planetname))
-    local planet=table.deepcopy(gpPlanetCollector.vanilla.planet["nauvis"])
+local function make_gazeous_planet(gen,index,star,distance,position,planetname)
+    local icon=gen:random(1,gazeous_graphics)
+    local planet=table.deepcopy(gpPlanetCollector.vanilla["space-location"]["solar-system-edge"])
+    planet.icon="__zzz-GalacticProtocol__/graphics/starmap/gazeous/icon-"..icon..".png"
+    planet.starmap_icon="__zzz-GalacticProtocol__/graphics/starmap/gazeous/icon-"..icon.."-starmap.png"
+    planet.starmap_icon_size=512
+    planet.magnitude=gen:random(2,4)
+    planet.gravity_pull= planet.magnitude*10
     planet.name=planetname
     planet.localised_name=planetname
     planet.draw_orbit = false
     planet.distance=position.distance
     planet.orientation=position.angle or position.orientation
+    planet.auto_save_on_first_trip=false
+    planet.solar_power_in_space=util_math.map(distance,0,50,star.solar_power_in_space,1)
+    planet.moon_number=gen:random(2,4)
     return planet
 end
 
-function planetCreator.create_planet(index,starname,position,planetname)
-    return make_solid_planet(index,starname,position,planetname)
+
+
+local function make_solid_planet(gen,index,star,distance,position,planetname,moon)
+    local available_type={}
+    for key,_ in pairs(gpPlanetCollector.vanilla.planet) do
+        table.insert(available_type,key)
+    end
+    
+    local planet=table.deepcopy(gpPlanetCollector.vanilla.planet[available_type[gen:random(1,#available_type)]])
+    planet.name=planetname
+    planet.localised_name=planetname
+    planet.draw_orbit = false
+    if moon then
+        planet.magnitude=planet.magnitude/3
+        planet.localised_name={"",{"gui.moon"},planetname}
+    end
+    planet.distance=position.distance
+    planet.orientation=position.angle or position.orientation
+    planet.auto_save_on_first_trip=false
+    planet.solar_power_in_space=util_math.map(distance,0,50,star.solar_power_in_space,1)
+    if not moon then
+        planet.moon_number=gen:random(0,1)
+    end
+    planet.moon=moon or false
+    return planet
+end
+
+function planetCreator.create_planet(index,star,distance,position,planetname,moon)
+    local gen=mwc(util_math.hash(planetname))
+    if gen:random()<0.15 and not moon then
+        return make_gazeous_planet(gen,index,star,distance,position,planetname)
+    else
+        return make_solid_planet(gen,index,star,distance,position,planetname,moon)
+    end
 end
 
 

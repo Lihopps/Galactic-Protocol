@@ -31,6 +31,9 @@ end
 function uCreator.get_name(gen)
     local index = gen:random(1, #gpbackers)
     local name = gpbackers[index]
+    if gptree[name] then
+        return uCreator.get_name(gen)
+    end
     --table.remove(gpbackers,index)
     return name
 end
@@ -184,7 +187,7 @@ end
 function uCreator.create_universe_connection(system_spot,galaxy_objects)
     local system={}
     for _,sys in pairs(galaxy_objects) do
-        table.insert(system,sys[0])
+        table.insert(system,sys[1])
     end
     local space_routes = uCreator.triangulation({x=0,y=0}, system, 1)
     local final_space_route = uCreator.make_final_routes(space_routes)
@@ -192,7 +195,7 @@ function uCreator.create_universe_connection(system_spot,galaxy_objects)
 end
 
 function uCreator.switch_planet(gen,system,planet)
-    local fstar=0
+    local fstar=1
     local fplanet=2
     local fconn=3
     for index,dat in ipairs(system) do
@@ -216,10 +219,10 @@ function uCreator.switch_planet(gen,system,planet)
     table.insert(system,planet_index,planet)
 
 
-    for i=1,#gptree[system[0].name].child do
-        if gptree[system[0].name].child[i]==pname then
-            table.remove(gptree[system[0].name].child,i)
-            table.insert(gptree[system[0].name].child,planet.name)
+    for i=1,#gptree[system[1].name].child do
+        if gptree[system[1].name].child[i]==pname then
+            table.remove(gptree[system[1].name].child,i)
+            table.insert(gptree[system[1].name].child,planet.name)
         end
     end
 

@@ -74,7 +74,7 @@ local function create_universe()
     data:extend({gpPlanetCollector.vanilla.connection["solar-system-edge-shattered-planet"]})
 
     --ajout de tout dans le jeu
-    --helpers.write_file("universe.json",helpers.table_to_json(galaxy_objects))
+    helpers.write_file("universe_cont.json",helpers.table_to_json(gptree))
     add_galaxy_objects_to_game(galaxy_objects)
 
     -- on met a jour les icons et space connection si besoin

@@ -1,11 +1,14 @@
 prochaine etape:
+    - ajout asteroids belt
     - integration planet modded
     - tweak planet
     - tech tree from route for system
-    - gui pour spaceplatform
     - settings for generation
+    - visible_planet support
+    - limit planet size ?
     
 pas urgent:
+    - ajout utilité a planete gazeuse
     - a voir si on peut pas faire chart la force allié 
     - definir la victoire
     - localisation

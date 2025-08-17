@@ -37,4 +37,10 @@ for name, prototype in pairs(data.raw["space-connection"]) do
     if lihop_debug then
         prototype.length=3000
     end
+
+    if (not prototype.icon) and (not prototype.icons) then
+        log("attention manque graphics : "..prototype.name.." / "..from.type.." / "..tostring(from.moon))
+        log("attention manque graphics : "..prototype.name.." / "..to.type.." / "..tostring(to.moon))
+    end
+    
 end

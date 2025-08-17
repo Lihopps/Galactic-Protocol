@@ -2734,7 +2734,7 @@ local backers={
 "SirOtterlot",
 "SirRuc",
 "SirSmuggler",
-"Sir^Ducer",
+"SirDucer",
 "Sisaroth",
 "SivertHenriksveen",
 "sixkiller5",

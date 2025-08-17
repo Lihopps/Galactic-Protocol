@@ -14,13 +14,13 @@ function edge.create_edge(etoile)
     localised_name={"gui.edgenamefromstar",etoile.name},
     icons = {
         {
-            icon = "__zzz-GalacticProtocol__/graphics/icons/solar-system-edge.png",
+            icon = "__zzz-GalacticProtocol__/graphics/starmap/star/solar-system-edge.png",
             icon_size = 64,
         }
     },
     starmap_icons = {
         {
-            icon = "__zzz-GalacticProtocol__/graphics/icons/solar-system-edge.png",
+            icon = "__zzz-GalacticProtocol__/graphics/starmap/star/solar-system-edge.png",
             icon_size = 64,
         }
     },

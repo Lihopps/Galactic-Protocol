@@ -29,7 +29,8 @@ local starmap = {}
 ---@param parent_entityPH LuaEntity : parent entity placeholder
 ---@param starname LuaSpaceLocationPrototype : string name of star reference of system
 ---@param starpH LuaEntity : star reference placeholder
-local function place_placeholder(surface, Pname, parent_entityPH, starname, starpH)
+---@param moon boolean : does the child are moon
+local function place_placeholder(surface, Pname, parent_entityPH, starname, starpH,moon)
     local refstar = prototypes.space_location[starname]
     local parent_data =prototypes.mod_data["gptree"].data[Pname]
     if parent_data then
@@ -54,19 +55,21 @@ local function place_placeholder(surface, Pname, parent_entityPH, starname, star
                 }
                 circle.move_to_back()
 
-                -- draw orbit
-                local angle = math.asin(2 * (circle_size) / (2 * util_math.distance({x=0,y=0}, position)))
-                local orbit = rendering.draw_arc {
-                    color = { 0.3, 0.3, 0.3, 0.3 },
-                    max_radius = (util_math.distance({x=0,y=0}, position) + 1 / 32),
-                    min_radius = (util_math.distance({x=0,y=0}, position) - 1 / 32),
-                    start_angle = util_math.cart_to_pol(position).angle + angle,
-                    angle = (2 * math.pi) - (2 * angle),
-                    target = parent_entityPH,
-                    surface = surface,
-                    draw_on_ground = true,
-                }
-                orbit.move_to_back()
+                if not moon then
+                    -- draw orbit
+                    local angle = math.asin(2 * (circle_size) / (2 * util_math.distance({x=0,y=0}, position)))
+                    local orbit = rendering.draw_arc {
+                        color = { 0.3, 0.3, 0.3, 0.3 },
+                        max_radius = (util_math.distance({x=0,y=0}, position) + 1 / 32),
+                        min_radius = (util_math.distance({x=0,y=0}, position) - 1 / 32),
+                        start_angle = util_math.cart_to_pol(position).angle + angle,
+                        angle = (2 * math.pi) - (2 * angle),
+                        target = parent_entityPH,
+                        surface = surface,
+                        draw_on_ground = true,
+                    }
+                    orbit.move_to_back()
+                end
 
                 -- draw text
                 local displayName = rendering.draw_text {
@@ -79,7 +82,7 @@ local function place_placeholder(surface, Pname, parent_entityPH, starname, star
                     alignment = "center"
                 }
 
-                place_placeholder(surface, name, planet, starname, starpH)
+                place_placeholder(surface, name, planet, starname, starpH,true)
             end
         end
 

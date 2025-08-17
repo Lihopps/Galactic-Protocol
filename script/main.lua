@@ -6,7 +6,7 @@ local main={}
 function main.on_init()
     remote.call("space_finish_script","set_victory_location","gp-wormhole")
 
-    helpers.write_file("tttt.json",helpers.table_to_json(prototypes.mod_data["gptree"].data))
+    helpers.write_file("universe.json",helpers.table_to_json(prototypes.mod_data["gptree"].data))
 
     if not storage.gpplatform then storage.gpplatform ={} end
     if not storage.gpship then storage.gpship ={} end
