@@ -1,6 +1,9 @@
 require("util.randomlua")
 require("final-fixes.collector")
+--helpers.write_file("tech.json",helpers.table_to_json(data.raw["technology"]))
+
 helpers.write_file("gpcoll.json",helpers.table_to_json(gpPlanetCollector))
+
 
 --on gere les compat dans le collector (ex "maraxsis-trench")
 require("compat.collector")
@@ -9,6 +12,7 @@ require("compat.collector")
 
 --on creer l'univers (star planet connection etc)
 require("final-fixes.universe")
+
 
 
 --- on met a jour le gp-tree pour avoir l'arbo
@@ -25,6 +29,12 @@ for planet_name, planet in pairs(data.raw["space-location"]) do
 end
 
 
+
+-- rebuild du tech tree
+require("final-fixes.technology-tree-builder").buildtree()
+
+
+
 -- envoi vers control stage
 data:extend({
    {
@@ -35,5 +45,10 @@ data:extend({
    }
 })
 
+--on force le player a spawn sur nauvis avec les items de base
+
+
 --- tout est fait on construit les placeholders
 require("final-fixes.starmapCreator")
+
+-- Enjoy :)

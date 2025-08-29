@@ -1,4 +1,3 @@
-storage.lihop_debug=true
 local handler = require("__core__.lualib.event_handler")
 
 handler.add_libraries({
@@ -10,3 +9,5 @@ handler.add_libraries({
 	require("script.starmap.platform"),
 	require("script.platformCreatorGUI")
 })
+
+

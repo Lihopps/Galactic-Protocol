@@ -55,7 +55,23 @@ local function place_placeholder(surface, Pname, parent_entityPH, starname, star
                 }
                 circle.move_to_back()
 
-                if not moon then
+                if string.find(name,"gpbelt-",0,true) then
+                    local belt_sprite=rendering.draw_sprite{
+                        sprite="gpbelt",
+                        orientation=math.random(),
+                        x_scale=util_math.distance({x=0,y=0}, position)/30,--1=30
+                        y_scale=util_math.distance({x=0,y=0}, position)/30,
+                        target=parent_entityPH,
+                        surface=surface,
+                        render_layer="resource",
+                        draw_on_ground=true
+
+                    }
+                    belt_sprite.move_to_back()
+                end
+
+
+                if not moon and not string.find(name,"gpbelt-",0,true) then
                     -- draw orbit
                     local angle = math.asin(2 * (circle_size) / (2 * util_math.distance({x=0,y=0}, position)))
                     local orbit = rendering.draw_arc {

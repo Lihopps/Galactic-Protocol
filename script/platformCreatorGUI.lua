@@ -93,6 +93,7 @@ function platformCreatorGUI.create_platformCreatorGUI(player)
                 {
                     type="frame",
                     style="inside_shallow_frame_with_padding",
+                    name="milieu",
                     children={
                         {
                             type="flow",
@@ -167,6 +168,7 @@ function platformCreatorGUI.create_platformCreatorGUI(player)
         })
     platformcreatorgui.titlebar.drag_target = platformcreatorgui["gp-platformCreatorGUI"]
     platformcreatorgui.bottombar.drag_target = platformcreatorgui["gp-platformCreatorGUI"]
+    platformcreatorgui.milieu.children[1].children[1].gp_starterpack.elem_value="space-platform-starter-pack"
     platformcreatorgui["gp-platformCreatorGUI"].force_auto_center()
     player.opened = platformcreatorgui["gp-platformCreatorGUI"]
 end

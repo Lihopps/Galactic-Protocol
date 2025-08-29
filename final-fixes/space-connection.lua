@@ -1,6 +1,10 @@
+local util_math=require("util.math")
 for name, prototype in pairs(data.raw["space-connection"]) do
+
     local from = data.raw["space-location"][prototype.from] or data.raw["planet"][prototype.from]
+    if not from then log(prototype.name.." not :"..prototype.from) end
     local to = data.raw["space-location"][prototype.to] or data.raw["planet"][prototype.to]
+    if not to then log(prototype.name.." not :"..prototype.to) end
     if (not prototype.icon) and (not prototype.icons) and from and (from.icon or from.icons[1].icon) and to and (to.icon or to.icons[1].icon) then
         local from_size = from.icon_size or 64
         local from_tint = from.tint or { r = 1, g = 1, b = 1, a = 1 }
@@ -38,9 +42,5 @@ for name, prototype in pairs(data.raw["space-connection"]) do
         prototype.length=3000
     end
 
-    if (not prototype.icon) and (not prototype.icons) then
-        log("attention manque graphics : "..prototype.name.." / "..from.type.." / "..tostring(from.moon))
-        log("attention manque graphics : "..prototype.name.." / "..to.type.." / "..tostring(to.moon))
-    end
     
 end

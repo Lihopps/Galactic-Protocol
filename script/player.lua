@@ -10,7 +10,7 @@ local function on_player_changed_surface(e)
     if player and player.valid then
         if player.surface then
             if string.find(game.surfaces[player.surface.index].name,"gpstar-",0,true) then
-                player.game_view_settings.show_entity_info=false
+                --player.game_view_settings.show_entity_info=false
                 player.game_view_settings.show_map_view_options=false
                 player.game_view_settings.show_quickbar=false
                 player.game_view_settings.show_minimap=false
@@ -19,7 +19,7 @@ local function on_player_changed_surface(e)
                 player.game_view_settings.show_tool_bar=false
                 player.game_view_settings.show_entity_tooltip=false
             else
-                player.game_view_settings.show_entity_info=true
+                --player.game_view_settings.show_entity_info=true
                 player.game_view_settings.show_map_view_options=true
                 player.game_view_settings.show_quickbar=true
                 player.game_view_settings.show_minimap=true
@@ -43,6 +43,9 @@ local function on_gui_opened(e)
                         return
                     end
                     game.print("pas de surface")
+                    return
+                elseif e.entity.surface.name=="gpstar-gpuniverse" then
+                    game.players[e.player_index].set_controller{type=defines.controllers.remote,surface=e.entity.name}
                     return
                 end
                 game.print("pas une planet")
@@ -142,6 +145,12 @@ function player.create_starPlatform_button(player)
                 },
             })
         end
+    end
+end
+
+function player.show_list()
+    for _,player in pairs(game.players) do
+        player.game_view_settings.show_surface_list=storage.lihop_debug
     end
 end
 

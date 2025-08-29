@@ -1,5 +1,6 @@
 local util_math=require("util.math")
 local uCreator=require("util.universeCreator")
+local belt=require("prototypes.asteroids-belt")
 local planetCreator={}
 
 local function make_gazeous_planet(gen,index,star,distance,position,planetname)
@@ -41,6 +42,7 @@ local function make_solid_planet(gen,index,star,distance,position,planetname,moo
     planet.orientation=position.angle or position.orientation
     planet.auto_save_on_first_trip=false
     planet.solar_power_in_space=util_math.map(distance,0,50,star.solar_power_in_space,1)
+    planet.surface_properties["solar-power"]=(planet.surface_properties["solar-power"]< planet.solar_power_in_space and planet.surface_properties["solar-power"]) or planet.solar_power_in_space
     if not moon then
         planet.moon_number=gen:random(0,1)
     end
@@ -50,7 +52,10 @@ end
 
 function planetCreator.create_planet(index,star,distance,position,planetname,moon)
     local gen=mwc(util_math.hash(planetname))
-    if gen:random()<0.15 and not moon then
+    local randnumber=gen:random()
+    if randnumber<0.1 and not moon then
+        return belt.asteroid_belt(gen,index,star,distance,position,planetname)
+    elseif randnumber<0.2 and not moon then
         return make_gazeous_planet(gen,index,star,distance,position,planetname)
     else
         return make_solid_planet(gen,index,star,distance,position,planetname,moon)

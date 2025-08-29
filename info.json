@@ -9,6 +9,8 @@
     "dependencies": [
 	"base >=2.0.64",
     "space-age>=2.0.64",
+    "quality>=2.0.64",
+    "elevated-rails>=2.0.64",
     "flib >=0.16.3"],
     "description": "Continue exploration,build a dyson sphere"
 }

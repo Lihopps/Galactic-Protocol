@@ -1,17 +1,18 @@
 prochaine etape:
-    - ajout asteroids belt
-    - integration planet modded
+    - ajout list platform
+    - integration planet modded 90%
     - tweak planet
-    - tech tree from route for system
     - settings for generation
     - visible_planet support
     - limit planet size ?
     
 pas urgent:
     - ajout utilité a planete gazeuse
+    - asteroid dans asteroid belt+gestion des asteroids
     - a voir si on peut pas faire chart la force allié 
     - definir la victoire
     - localisation
+    - tooltip por star, asteroids belt
     - revoir le contains tooltip pour les planets+evolution factor+lightning
     - trouver un moyen de sauvegarder la planet position pour le controller
     - spécifique tile pour la starmap pour prevent le build ?

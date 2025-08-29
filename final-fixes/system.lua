@@ -44,7 +44,7 @@ local function unlock_system(etoile, system)
         icon_size = 256,
         essential = true,
         effects = effect,
-        prerequisites = { "rocket-silo" },
+        prerequisites = {},
         research_trigger = {
             type = "send-item-to-orbit",
             item = "iron-plate"
@@ -129,7 +129,7 @@ function systemCreator.create_system(index, name, pos)
             gptree[planet.name]={child={},connection={}}
             -- moon ?
             if planet.moon_number then
-                if planet.moon_number>0 then
+                if planet.moon_number>0.8 then
                     for j=1,planet.moon_number do
                         local pname = uCreator.get_name(gen)
                         local moon_position = uCreator.make_final_coord(planet_position,{ distance = 2+j, orientation =gen:random()})
@@ -140,15 +140,16 @@ function systemCreator.create_system(index, name, pos)
                         if moon then
                             table.insert(gptree[planet.name].child,moon.name)
                             gptree[moon.name]={child={},connection={}}
-                            data:extend({moon,{
-                                type = "space-connection",
-                                name = planet.name .. "-to-" .. moon.name,
-                                subgroup = "gpstar-" .. name,
-                                from = planet.name,
-                                to = moon.name,
-                                order = planet.name.."z" .. etoile.order,
-                                need_spanwdef = true
-                            }})
+                            table.insert(gpmoontracker,{moon=moon,parent=planet.name,order=etoile.order})
+                            -- data:extend({moon,{
+                            --     type = "space-connection",
+                            --     name = planet.name .. "-to-" .. moon.name,
+                            --     subgroup = "gpstar-" .. name,
+                            --     from = planet.name,
+                            --     to = moon.name,
+                            --     order = planet.name.."z" .. etoile.order,
+                            --     need_spanwdef = true
+                            -- }})
                         end
                     end
                 end

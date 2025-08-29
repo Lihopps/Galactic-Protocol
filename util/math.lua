@@ -97,4 +97,15 @@ function util_math.in_circle(sommet,circle_data)
     end
 end
 
+function util_math.split(inputstr, sep)
+   if sep == nil then
+      sep = "%s"
+   end
+   local t={}
+   for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
+      table.insert(t, str)
+   end
+   return t
+end
+
 return util_math

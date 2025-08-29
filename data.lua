@@ -11,6 +11,8 @@ if data.raw.planet["nauvis"] then
 end
 gpbackers=table.deepcopy(require("backers"))
 gptree={}
+gpmoontracker={}
+
 
 gazeous_graphics=1
 

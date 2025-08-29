@@ -57,13 +57,15 @@ function util_tooltip.make_corps_Tooltip(planet)
     if planet.surface_properties then
         for name, value in pairs(planet.surface_properties) do
             local val={ "surface-property-unit." .. name, tostring(math.floor(value)) } or tostring(math.floor(value))
-            if string.find(name,"day-night-cycle",0,true) then
-                val=util_format.seconds_to_readable_times(value/60)
+            if not string.find(name,"planet-str",0,true) then
+                if string.find(name,"day-night-cycle",0,true) then
+                    val=util_format.seconds_to_readable_times(value/60)
+                end
+                table.insert(tooltip, {
+                    type="label",
+                    caption={"",{ "surface-property-name." .. name }," : ",val }
+                })
             end
-            table.insert(tooltip, {
-                type="label",
-                caption={"",{ "surface-property-name." .. name }," : ",val }
-            })
         end
         if planet.surface_properties["gravity"] and planet.surface_properties["pressure"] then
             table.insert(tooltip, 

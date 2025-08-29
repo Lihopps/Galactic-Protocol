@@ -2,14 +2,14 @@ local util_math = require("util.math")
 
 local uCreator = {}
 
-function uCreator.get_final_pos(gen,possible_distance, max_planets)
-    local final_pos={}
-    for i=1,max_planets do
-        local index=gen:random(1,#possible_distance)
-        table.insert(final_pos,possible_distance[index])
-        table.remove(possible_distance,index)
+function uCreator.get_final_pos(gen, possible_distance, max_planets)
+    local final_pos = {}
+    for i = 1, max_planets do
+        local index = gen:random(1, #possible_distance)
+        table.insert(final_pos, possible_distance[index])
+        table.remove(possible_distance, index)
     end
-    final_sort=table.sort(final_pos)
+    table.sort(final_pos)
     return final_pos
 end
 
@@ -31,7 +31,7 @@ end
 function uCreator.get_name(gen)
     local index = gen:random(1, #gpbackers)
     local name = gpbackers[index]
-    if gptree[name] then
+    if gptree[name] or gptree["gpstar-" .. name] or gptree["gpbelt-" .. name] then
         return uCreator.get_name(gen)
     end
     --table.remove(gpbackers,index)
@@ -39,10 +39,10 @@ function uCreator.get_name(gen)
 end
 
 function uCreator.create_system_location(max_system, gen)
-    local points_cart = {{ position={ x = 0, y = 0 } }}
+    local points_cart = { { position = { x = 0, y = 0 } } }
     local max = 0
     while #points_cart < max_system and max < 5000 do
-        local new_point = {position={ x = gen:random(-500, 500), y = gen:random(-500, 500) }}
+        local new_point = { position = { x = gen:random(-500, 500), y = gen:random(-500, 500) } }
         local overlap = false
         for _, point in pairs(points_cart) do
             if util_math.distance(new_point.position, point.position) < (50 + 50 + 2) then
@@ -110,7 +110,7 @@ end
 function uCreator.triangulation(star_position, system, state)
     local supertriangle = make_supertriangle(star_position, state)
     local triangles = { supertriangle }
-    local points = system--table.deepcopy(system)
+    local points = system --table.deepcopy(system)
 
     for _, sommet in pairs(points) do
         local badTriangles = {}
@@ -184,70 +184,134 @@ function uCreator.create_system_connection(star_position, system)
     --return connection
 end
 
-function uCreator.create_universe_connection(system_spot,galaxy_objects)
-    local system={}
-    for _,sys in pairs(galaxy_objects) do
-        table.insert(system,sys[1])
+function uCreator.create_universe_connection(system_spot, galaxy_objects)
+    local system = {}
+    for _, sys in pairs(galaxy_objects) do
+        table.insert(system, sys[1])
     end
-    local space_routes = uCreator.triangulation({x=0,y=0}, system, 1)
+    local space_routes = uCreator.triangulation({ x = 0, y = 0 }, system, 1)
     local final_space_route = uCreator.make_final_routes(space_routes)
     return final_space_route
 end
 
-function uCreator.switch_planet(gen,system,planet)
-    local fstar=1
-    local fplanet=2
-    local fconn=3
-    for index,dat in ipairs(system) do
-        if dat.type=="space-connection" then
-            fconn=index
-            break
-        end
-    end
-    local planet_index=gen:random(fplanet,fconn-1)
-    if gpPlanetCollector.modded.planet[system[planet_index].name] then
-        log("essai de changement d'un planet modded")
-        uCreator.switch_planet(gen,system,planet)
-    end
-    
-    local pname=system[planet_index].name
-    planet.distance=system[planet_index].distance
-    planet.orientation=system[planet_index].orientation
-    planet.subgroup=system[planet_index].subgroup
-    planet.order=system[planet_index].order
-    table.remove(system,planet_index)
-    table.insert(system,planet_index,planet)
+function uCreator.switch_planet(gen, galaxy_objects, planet)
+    if planet.orbit then
+        if planet.orbit.parent then
+            if planet.orbit.parent.type=="planet" then
+                --so it's a moon
+                local index = gen:random(2, #gpmoontracker)
+                local moon_data = gpmoontracker[index]
+                if gpPlanetCollector.modded.planet[moon_data.moon.name] then
+                    log("essai de changement d'une moon modded")
+                    return uCreator.switch_planet(gen, galaxy_objects, planet)
+                end
+                
+                local pname = moon_data.moon.name
+                planet.distance = moon_data.moon.distance
+                planet.orientation = moon_data.moon.orientation
+                planet.subgroup = moon_data.moon.subgroup
+                planet.order = moon_data.moon.order
+                planet.solar_power_in_space=moon_data.moon.solar_power_in_space
+                planet.surface_properties["solar-power"]=(planet.surface_properties["solar-power"]< planet.solar_power_in_space and planet.surface_properties["solar-power"]) or planet.solar_power_in_space
+        
 
+                gptree[planet.name] = gptree[pname] or { child = {}, connection = {} }
+                gptree[pname]=nil
+                gpmoontracker[index].moon=planet
 
-    for i=1,#gptree[system[1].name].child do
-        if gptree[system[1].name].child[i]==pname then
-            table.remove(gptree[system[1].name].child,i)
-            table.insert(gptree[system[1].name].child,planet.name)
-        end
-    end
+                for i=1,#gptree[gpmoontracker[index].parent].child do
+                    if gptree[gpmoontracker[index].parent].child[i]==pname then
+                        gptree[gpmoontracker[index].parent].child[i]=planet.name
+                        break
+                    end
+                end
+                
+                for _,system in pairs(galaxy_objects) do
+                    if system[#system].effects then
+                        for _, effect in pairs(system[#system].effects) do
+                            if effect.type == "unlock-space-location" then
+                                if effect.space_location == pname then
+                                    effect.space_location = planet.name
+                                end
+                            end
+                        end
+                    end
+                end
 
-
-    for i=fconn,#system do
-        if system[i].type=="space-connection" then
-            if system[i].from==pname then
-                system[i].from=planet.name
-                system[i].name=planet.name.."-to-"..system[i].to
-            end
-            if system[i].to==pname then
-                system[i].to=planet.name
-                system[i].name=system[i].from.."-to-"..planet.name
-            end
-        end
-    end
-
-    for _,effect in pairs(system[#system].effects) do
-        if effect.type == "unlock-space-location" then
-            if effect.space_location==pname then
-                effect.space_location=planet.name
+                return true
             end
         end
-    end 
+        planet.orbit=nil
+        return uCreator.switch_planet(gen, galaxy_objects, planet)
+    else
+        local index_s = gen:random(2, #galaxy_objects)
+        local system = galaxy_objects[index_s]
+        local fstar = 1
+        local fplanet = 2
+        local fconn = 3
+        for index, dat in ipairs(system) do
+            if dat.type == "space-connection" then
+                fconn = index
+                break
+            end
+        end
+        local planet_index = gen:random(2, fconn - 1)
+        if gpPlanetCollector.modded.planet[system[planet_index].name] then
+            log("essai de changement d'un planet modded")
+            return uCreator.switch_planet(gen, galaxy_objects, planet)
+        elseif (system[planet_index].moon_number or -1) > 0 then
+            log("essai de changement d'une planet mooned")
+            return uCreator.switch_planet(gen, galaxy_objects, planet)
+        elseif string.find(system[planet_index].name, "-system-edge", 0, true) then
+            log("essai de changement d'un edge")
+            return uCreator.switch_planet(gen, galaxy_objects, planet)
+        end
 
+        local pname = system[planet_index].name
+        planet.distance = system[planet_index].distance
+        planet.orientation = system[planet_index].orientation
+        planet.subgroup = system[planet_index].subgroup
+        planet.order = system[planet_index].order
+        planet.solar_power_in_space=system[planet_index].solar_power_in_space
+        planet.surface_properties["solar-power"]=(planet.surface_properties["solar-power"]< planet.solar_power_in_space and planet.surface_properties["solar-power"]) or planet.solar_power_in_space
+        table.remove(system, planet_index)
+        table.insert(system, planet_index, planet)
+
+
+        for i = 1, #gptree[system[1].name].child do
+            if gptree[system[1].name].child[i] == pname then
+                table.remove(gptree[system[1].name].child, i)
+                table.insert(gptree[system[1].name].child, planet.name)
+                break
+            end
+        end
+        gptree[planet.name] = gptree[pname] or { child = {}, connection = {} }
+        gptree[pname] = nil
+
+        for i = fconn, #system do
+            if system[i].type == "space-connection" then
+                if system[i].from == pname then
+                    system[i].from = planet.name
+                    system[i].name = planet.name .. "-to-" .. system[i].to
+                end
+                if system[i].to == pname then
+                    system[i].to = planet.name
+                    system[i].name = system[i].from .. "-to-" .. planet.name
+                end
+            end
+        end
+
+        --log(system[11].name)
+
+        for _, effect in pairs(system[#system].effects) do
+            if effect.type == "unlock-space-location" then
+                if effect.space_location == pname then
+                    effect.space_location = planet.name
+                end
+            end
+        end
+        return true
+    end
 end
 
 return uCreator
