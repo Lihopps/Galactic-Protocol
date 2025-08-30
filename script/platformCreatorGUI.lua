@@ -4,11 +4,11 @@ local platformCreatorGUI = {}
 
 local function get_all_planets(player)
     local list={}
-    local index=0
+    local index=1
     for name,planet in pairs(game.planets) do
         if player.force.is_space_location_unlocked(name) then
             table.insert(list, planet.name)
-            if player.surface.name==name then
+            if player.physical_surface.name==name then
                 index=#list
             end
         end
@@ -23,6 +23,7 @@ local function on_create_platform(e)
     local start=table.gp_starterpack.elem_value or "space-platform-starter-pack"
 
     game.players[e.player_index].force.create_space_platform{name=name,planet=planet,starter_pack=start}
+    e.element.parent.parent.destroy()
 end
 
 local function on_gui_fermed(e)

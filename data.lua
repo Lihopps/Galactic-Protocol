@@ -12,11 +12,14 @@ end
 gpbackers=table.deepcopy(require("backers"))
 gptree={}
 gpmoontracker={}
+gp_gazeous_field={light={},heavy={}}
 
 
 gazeous_graphics=1
+require("util.gen_function")
 
 require("categories.category")
 require("prototypes.platformPH")
 require("prototypes.technology")
 require("prototypes.sprite")
+require("prototypes.style")

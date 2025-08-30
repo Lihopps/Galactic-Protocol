@@ -1,17 +1,49 @@
--- data:extend({
---     {
---         type = "technology",
---         name = "gpstar-calidus",
---         localised_name = { "technology-name.lihop-system-discovery", "" },
---         localised_description = { "technology-description.help-discovery", "" },
---         icons = util_graphics.sptechnology_icon_constant_planet(etoile.icons),
---         icon_size = 256,
---         essential = true,
---         effects = effect,
---         prerequisites = { "rocket-silo" },
---         research_trigger = {
---             type = "send-item-to-orbit",
---             item = "iron-plate"
---         }
---     }
--- })
+data:extend({
+    {
+      type = "technology",
+      name = "gp-harvester-l",
+      icon = "__zzz-GalacticProtocol__/graphics/technology/gp-harvester-l.png",
+      icon_size = 256,
+      essential = true,
+      effects = {
+        -- {
+        -- type = "unlock-recipe",
+        -- recipe = "gp-harvester"
+        -- },
+      },
+      prerequisites = { "rocket-silo" },
+      unit =
+      {
+        count = 1000,
+        ingredients =
+        {
+          { "automation-science-pack", 1 },
+          { "logistic-science-pack",   1 },
+          { "chemical-science-pack",   1 },
+          { "space-science-pack",      1 }
+        },
+        time = 60
+      }
+    },
+     {
+      type = "technology",
+      name = "gp-superbarrel",
+      icon = "__zzz-GalacticProtocol__/graphics/technology/lihop-superbarrel.png",
+      icon_size = 256,
+      essential = true,
+      effects = {},
+      prerequisites = { "gp-harvester-l" },
+      unit =
+      {
+        count = 1000,
+        ingredients =
+        {
+          { "automation-science-pack", 1 },
+          { "logistic-science-pack",   1 },
+          { "chemical-science-pack",   1 },
+          { "space-science-pack",      1 }
+        },
+        time = 60
+      }
+    },
+})

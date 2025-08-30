@@ -7,7 +7,8 @@ handler.add_libraries({
 	require("script.player"),
 	require("script.starmap.custom_star_map_tooltip"),
 	require("script.starmap.platform"),
-	require("script.platformCreatorGUI")
+	require("script.platformCreatorGUI"),
+	require("script.starmap.star_map_platform_list"),
 })
 
 

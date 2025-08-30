@@ -42,6 +42,11 @@ local function data_display_collector(entity)
     return nil
 end
 
+local function data_display_collector_from_list(platform)
+        local data=util_tooltip.make_platform_Tooltip(platform)
+        return {data,{"",{"surface-name.space-platform"}," ",platform.name}}
+end
+
 -- Handle selection changes
 local function on_selected_entity_changed(e)
     local player = game.get_player(e.player_index)
@@ -73,6 +78,15 @@ local function on_tick(e)
     for index, _ in pairs(storage.players_custom_tooltip) do
         update_custom_tooltip_ship(game.players[index])
     end
+end
+
+function custom_tooltip.create_tooltip_from_list(bool,player,platform,tag_type)
+    if bool then
+        create_custom_tooltip(player, nil,data_display_collector_from_list(platform),tag_type)
+    else
+        destroy_custom_tooltip(player)
+    end
+    
 end
 
 custom_tooltip.events = {

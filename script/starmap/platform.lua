@@ -1,4 +1,6 @@
 local util_math=require("util.math")
+local mod_gui = require("__core__.lualib.mod-gui")
+local pltformlist=require("script.starmap.star_map_platform_list")
 
 local sm_platform={}
 
@@ -40,13 +42,38 @@ local function get_pos_on_map_from_connection(platform,scale)
 end
 
 local function on_space_platform_changed_state(e)
-
+    local platform=e.platform
+    if platform and platform.valid then
+        local data=pltformlist.get_state(platform)
+        if data.enabled then
+            for _,player in pairs(game.players) do
+                if mod_gui.get_frame_flow(player).platform_list then
+                    for k,v in pairs(mod_gui.get_frame_flow(player).platform_list.children) do
+                        if v.tags.index==platform.index then
+                            v.enabled=data.enabled
+                            v.caption=((not data.enabled and "hi")or "").."  [planet="..platform.space_location.name.."]  "..platform.name
+                            v.raise_hover_events=true
+                            v.tooltip=data.tooltip
+                        end
+                    end
+                end
+            end
+        end
+    end
 end
 
 local function on_tick(e)
     if e.tick%5==0 then
         for _,force in pairs(game.forces) do
             for _,platform in pairs(force.platforms) do
+                if platform.scheduled_for_deletion>0 then
+                    if storage.gpplatform[platform.index] then
+                        storage.gpplatform[platform.index].destroy()
+                        storage.gpplatform[platform.index]=nil
+                    end
+                    goto suivant
+                end
+                
                 if not storage.gpplatform[platform.index] then
                     createPlatformPh(platform)
                 end
@@ -86,10 +113,11 @@ local function on_tick(e)
                             storage.gpplatform[platform.index].destroy()
                             storage.gpplatform[platform.index]=temp
                             storage.gpship[temp.unit_number]=platform
-                            game.tick_paused=true
+                            --game.tick_paused=true
                         end
                     end
                 end
+                ::suivant::
             end
         end
     end
@@ -116,7 +144,7 @@ sm_platform.events={
     [defines.events.on_space_platform_changed_state]=on_space_platform_changed_state,
     [defines.events.on_tick]=on_tick,
     [defines.events.on_entity_renamed]=on_entity_renamed,
-    [defines.events.on_entity_died]=on_entity_died
+    [defines.events.on_entity_died]=on_entity_died,
 }
 
 return sm_platform

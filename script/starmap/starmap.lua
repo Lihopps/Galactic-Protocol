@@ -51,6 +51,7 @@ local function place_placeholder(surface, Pname, parent_entityPH, starname, star
                     width = 2,
                     target = planet,
                     surface = surface,
+                    render_layer="resource",
                     draw_on_ground = true
                 }
                 circle.move_to_back()
@@ -82,6 +83,7 @@ local function place_placeholder(surface, Pname, parent_entityPH, starname, star
                         angle = (2 * math.pi) - (2 * angle),
                         target = parent_entityPH,
                         surface = surface,
+                        render_layer="resource",
                         draw_on_ground = true,
                     }
                     orbit.move_to_back()
@@ -95,6 +97,7 @@ local function place_placeholder(surface, Pname, parent_entityPH, starname, star
                     target = { x = planet.position.x, y = planet.position.y + circle_size + 0.25 },
                     only_in_alt_mode = true,
                     scale_with_zoom = true,
+                    render_layer="resource",
                     alignment = "center"
                 }
 
@@ -120,7 +123,8 @@ local function place_placeholder(surface, Pname, parent_entityPH, starname, star
                     width = 2,
                     from = util_math.add_vector(parent_entityPH.position, util_math.scale_vector(vector, circle_size1)),
                     to = util_math.minus_vector(position, util_math.scale_vector(vector, circle_size)),
-                    surface = surface
+                    surface = surface,
+                    render_layer="resource",
                 }
             end
         end

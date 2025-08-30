@@ -1,6 +1,7 @@
 local util_math=require("util.math")
 local uCreator=require("util.universeCreator")
 local belt=require("prototypes.asteroids-belt")
+local planet_gen_settings=require("prototypes.planet_gen_settings")
 local planetCreator={}
 
 local function make_gazeous_planet(gen,index,star,distance,position,planetname)
@@ -19,6 +20,7 @@ local function make_gazeous_planet(gen,index,star,distance,position,planetname)
     planet.auto_save_on_first_trip=false
     planet.solar_power_in_space=util_math.map(distance,0,50,star.solar_power_in_space,1)
     planet.moon_number=gen:random(2,4)
+    planet.field=uCreator.get_gazeous_field(gen)
     return planet
 end
 
@@ -26,11 +28,13 @@ end
 
 local function make_solid_planet(gen,index,star,distance,position,planetname,moon)
     local available_type={}
-    for key,_ in pairs(gpPlanetCollector.vanilla.planet) do
-        table.insert(available_type,key)
+    for _,v in pairs({"vanilla","modded"}) do
+        for key,_ in pairs(gpPlanetCollector[v].planet) do
+            table.insert(available_type,key)
+        end
     end
-    
-    local planet=table.deepcopy(gpPlanetCollector.vanilla.planet[available_type[gen:random(1,#available_type)]])
+    local planet_type_base=available_type[gen:random(1,#available_type)]
+    local planet=table.deepcopy(gpPlanetCollector.vanilla.planet[planet_type_base] or gpPlanetCollector.modded.planet[planet_type_base])
     planet.name=planetname
     planet.localised_name=planetname
     planet.draw_orbit = false
@@ -47,6 +51,7 @@ local function make_solid_planet(gen,index,star,distance,position,planetname,moo
         planet.moon_number=gen:random(0,1)
     end
     planet.moon=moon or false
+    planet_gen_settings.tweak_planet(gen,planet)
     return planet
 end
 

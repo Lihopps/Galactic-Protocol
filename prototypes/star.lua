@@ -68,7 +68,8 @@ function star.create_star(name,temperature,position)
     distance = position.distance,
     orientation = position.orientation or position.angle,
     label_orientation = 0.15,
-    position=util_math.fpol_to_cart(position)
+    position=util_math.fpol_to_cart(position),
+    field={plasma="fusion-plasma"}
 }
 return etoile
 end

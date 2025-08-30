@@ -31,10 +31,6 @@ local function on_research_finished(e)
                 playerScript.create_starUniverse_button(player)
             end
         end
-    elseif e.research.name=="rocket-silo" then
-        for _,player in pairs(e.research.force.players) do
-            playerScript.create_starPlatform_button(player)
-        end
     end
 end
 

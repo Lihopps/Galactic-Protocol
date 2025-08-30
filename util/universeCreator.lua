@@ -314,4 +314,11 @@ function uCreator.switch_planet(gen, galaxy_objects, planet)
     end
 end
 
+function uCreator.get_gazeous_field(gen)
+    local light = gp_gazeous_field["light"][gen:random(1,#gp_gazeous_field["light"])]
+    local heavy =gp_gazeous_field["heavy"][gen:random(1,#gp_gazeous_field["heavy"])]
+    return {light=light,heavy=heavy}
+end
+
+
 return uCreator

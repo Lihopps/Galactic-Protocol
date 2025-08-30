@@ -81,7 +81,7 @@ function systemCreator.create_vanilla_system(pos)
 
     
     --etoile.factoriopedia_description = helpers.table_to_json({ child = children, connection = {} })
-    gptree[etoile.name]={ child = children, connection = {} }
+    gptree[etoile.name]={ child = children, connection = {},field=etoile.field or {} }
     table.insert(system, 1, etoile)
     table.insert(system, {
         type = "space-connection",
@@ -126,7 +126,7 @@ function systemCreator.create_system(index, name, pos)
         if planet then
             table.insert(children, planet.name)
             table.insert(system, planet)
-            gptree[planet.name]={child={},connection={}}
+            gptree[planet.name]={child={},connection={},field=planet.field or {}}
             -- moon ?
             if planet.moon_number then
                 if planet.moon_number>0.8 then
@@ -160,7 +160,7 @@ function systemCreator.create_system(index, name, pos)
     end
     table.insert(children, etoile.name .. "-system-edge")
     --etoile.factoriopedia_description = helpers.table_to_json({ child = children, connection = {} })
-    gptree[etoile.name]={ child = children, connection = {} }
+    gptree[etoile.name]={ child = children, connection = {},field=etoile.field or {} }
 
     local tech = unlock_system(etoile, system)
     local connection = uCreator.create_system_connection(pos, system)

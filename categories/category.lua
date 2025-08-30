@@ -13,12 +13,28 @@ data:extend({
         order = "zzzzzz",
     },
     {
-    type = "custom-input",
-    name = "open-custom-PLANET",
-    key_sequence = "ALT + mouse-button-1",
-    linked_game_control="open-factoriopedia",
-    include_selected_prototype=true,
-    consuming = "none",--"game-only",
-    action = "lua"
-  },
+        type = "custom-input",
+        name = "open-custom-PLANET",
+        key_sequence = "ALT + mouse-button-1",
+        linked_game_control = "open-factoriopedia",
+        include_selected_prototype = true,
+        consuming = "none", --"game-only",
+        action = "lua"
+    },
+    {
+        type = "recipe-category",
+        name = "gp-harvesting"
+    },
+    {
+        type = "item-subgroup",
+        name = "fill-superbarrel",
+        group = "intermediate-products",
+        order = "ea",
+    },
+    {
+        type = "item-subgroup",
+        name = "empty-superbarrel",
+        group = "intermediate-products",
+        order = "fa",
+    },
 })
