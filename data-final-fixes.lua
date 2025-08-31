@@ -1,5 +1,7 @@
 require("util.randomlua")
 local superbarrel=require("util.superbarrel")
+local planet_map_gen=require("prototypes.planet_gen_settings")
+
 
 require("final-fixes.collector")
 --helpers.write_file("tech.json",helpers.table_to_json(data.raw["technology"]))
@@ -28,6 +30,8 @@ for planet_name, planet in pairs(data.raw["space-location"]) do
       end
    end
 end
+
+
 
 --on ajoute les recipes du harvester
 --add harvesting light and heavy recipe and create super barrel
@@ -85,6 +89,29 @@ for type, fluids in pairs(gp_gazeous_field) do
     superbarrel.create_all(fluidproto, h_temp)
   end
 end
+
+data:extend({
+  {
+    type = "recipe",
+    name = "gp-harvesting-fusion-plasma",
+    enabled = lihop_debug,
+    surface_conditions = { { property = "gravity", min = 0, max = 0 } },
+    category = "gp-harvesting",
+    energy_required = 2,
+    subgroup = "fluid-recipes",
+    order = "z",
+    ingredients = {},
+    results = { { type = "fluid", fluidbox_index = 3, name = "fusion-plasma", amount = 100, temperature = data.raw["fluid"]["fusion-plasma"].max_temperature } }
+  },
+})
+
+
+-- planet size
+planet_map_gen.planet_size()
+
+
+-- on fait les minor changes en fonction des mods COMPAT
+require("compat.minor-change")
 
 
 -- rebuild du tech tree

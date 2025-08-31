@@ -3,6 +3,7 @@ local gui = require("__flib__.gui")
 
 local platformCreatorGUI=require("script.platformCreatorGUI")
 local custom_tooltip =require("script.starmap.custom_star_map_tooltip")
+local util_tooltip=require("util.tooltip")
 
 local function open_star_platform(e)
     local play=game.players[e.player_index]
@@ -43,7 +44,7 @@ local function get_platform(force)
         if not data.delete then
             table.insert(platforms,{
                 type="button",
-                caption=((not data.enabled and "[img=utility/warning_white]")or "").."  [planet="..platform.space_location.name.."]  "..platform.name,
+                caption=util_tooltip.platform_caption_list(data,platform),
                 raise_hover_events=true,
                 style = "platform_list_button",
                 style_mods = {

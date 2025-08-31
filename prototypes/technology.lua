@@ -46,4 +46,35 @@ data:extend({
         time = 60
       }
     },
+     {
+      type = "technology",
+      name = "gp-harvester-h",
+      icon = "__zzz-GalacticProtocol__/graphics/technology/lihop-harvester-h.png",
+      icon_size = 256,
+      essential = true,
+      effects = {
+        {
+        type = "unlock-recipe",
+        recipe = "gp-harvesting-fusion-plasma"
+        },
+        -- {
+        -- type = "unlock-recipe",
+        -- recipe = "lihop-plasma-thruster"
+        -- },
+
+      },
+      prerequisites = { "gp-harvester-l" },
+      unit =
+      {
+        count = 1000,
+        ingredients =
+        {
+          { "automation-science-pack", 1 },
+          { "logistic-science-pack",   1 },
+          { "chemical-science-pack",   1 },
+          { "space-science-pack",      1 }
+        },
+        time = 60
+      }
+    },
 })

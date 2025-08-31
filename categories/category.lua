@@ -37,4 +37,9 @@ data:extend({
         group = "intermediate-products",
         order = "fa",
     },
+    {
+        name = "planet_size",
+        type = "noise-expression",
+        expression = "-1"
+    },
 })

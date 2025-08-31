@@ -2,13 +2,13 @@ prochaine etape:
     - integration planet modded 90%
     - settings for generation
     - visible_planet support
-    - limit planet size ?
+    - ajout calidus
     
 pas urgent:
-    - ajout utilité a planete gazeuse
     - asteroid dans asteroid belt+gestion des asteroids
     - a voir si on peut pas faire chart la force allié 
     - ameliorer la tweak gen
+    - pour l'une ajout sprite planet en arriere plan ?
     - definir la victoire
     - localisation
     - tooltip pour star, asteroids belt
@@ -17,5 +17,6 @@ pas urgent:
     - spécifique tile pour la starmap pour prevent le build ?
 
 
-
+compat :
+    - maraxis : spawn cliff et simple entity water
 

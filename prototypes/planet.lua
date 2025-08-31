@@ -38,6 +38,7 @@ local function make_solid_planet(gen,index,star,distance,position,planetname,moo
     planet.name=planetname
     planet.localised_name=planetname
     planet.draw_orbit = false
+    planet.magnitude=gen:random(0,2)*planet.magnitude
     if moon then
         planet.magnitude=planet.magnitude/3
         planet.localised_name={"",{"gui.moon"},planetname}
@@ -47,11 +48,13 @@ local function make_solid_planet(gen,index,star,distance,position,planetname,moo
     planet.auto_save_on_first_trip=false
     planet.solar_power_in_space=util_math.map(distance,0,50,star.solar_power_in_space,1)
     planet.surface_properties["solar-power"]=(planet.surface_properties["solar-power"]< planet.solar_power_in_space and planet.surface_properties["solar-power"]) or planet.solar_power_in_space
+    planet.surface_properties["size_surface"]=uCreator.get_planet_size(planet.magnitude)
     if not moon then
         planet.moon_number=gen:random(0,1)
     end
     planet.moon=moon or false
     planet_gen_settings.tweak_planet(gen,planet)
+    planet.base_type=planet_type_base
     return planet
 end
 

@@ -320,5 +320,11 @@ function uCreator.get_gazeous_field(gen)
     return {light=light,heavy=heavy}
 end
 
+function uCreator.get_planet_size(magnitude)
+    --nauvis magnitude = 1 ==> 10 000 tiles
+    -- 0 a 2 pour les planets 
+    -- 0 a 2/3 pour les lunes
+    return util_math.map(magnitude,0,2,100,20000-100)
+end
 
 return uCreator

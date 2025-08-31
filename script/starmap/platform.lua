@@ -1,6 +1,7 @@
 local util_math=require("util.math")
 local mod_gui = require("__core__.lualib.mod-gui")
 local pltformlist=require("script.starmap.star_map_platform_list")
+local util_tooltip=require("util.tooltip")
 
 local sm_platform={}
 
@@ -51,7 +52,7 @@ local function on_space_platform_changed_state(e)
                     for k,v in pairs(mod_gui.get_frame_flow(player).platform_list.children) do
                         if v.tags.index==platform.index then
                             v.enabled=data.enabled
-                            v.caption=((not data.enabled and "hi")or "").."  [planet="..platform.space_location.name.."]  "..platform.name
+                            v.caption=util_tooltip.platform_caption_list(data,platform)
                             v.raise_hover_events=true
                             v.tooltip=data.tooltip
                         end

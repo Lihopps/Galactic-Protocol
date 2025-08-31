@@ -9,6 +9,8 @@ handler.add_libraries({
 	require("script.starmap.platform"),
 	require("script.platformCreatorGUI"),
 	require("script.starmap.star_map_platform_list"),
+	require("script.entity"),
+	require("script.platform")
 })
 
 

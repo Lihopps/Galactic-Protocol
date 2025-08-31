@@ -193,4 +193,10 @@ function util_tooltip.make_platform_Tooltip(platform)
     return tooltip
 end
 
+
+function util_tooltip.platform_caption_list(data,platform)
+    local caption=((not data.enabled and "[img=utility/warning_white]")or "").."  [space-location="..platform.last_visited_space_location.name.."]  "..platform.name
+    return caption
+end
+
 return util_tooltip
