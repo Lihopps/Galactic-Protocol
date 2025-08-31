@@ -64,6 +64,11 @@ local function on_gui_opened(e)
                 end
                 game.print("pas une planet")
             end
+        elseif e.entity.name == "spaceshipph" then
+            if storage.gpship[e.entity.unit_number] then
+                game.players[e.player_index].opened = nil
+                game.players[e.player_index].centered_on=storage.gpship[e.entity.unit_number].hub
+            end
         end
     end
 end

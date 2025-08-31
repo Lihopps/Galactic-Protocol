@@ -32,7 +32,26 @@ local function get_pos_on_map_from_connection(platform,scale)
     local dist=platform.distance
     local posFrom=from.position
     local posTo=to.position
-    local star=prototypes.space_location[storage.gpuniverse[to.name].name]
+    local star=prototypes.space_location[storage.gpuniverse[from.name].name]
+
+    posFrom=util_math.minus_vector(posFrom,star.position)
+    posTo=util_math.minus_vector(posTo,star.position)
+    local x=util_math.map(dist,0,1,posFrom.x,posTo.x)
+    local y=util_math.map(dist,0,1,posFrom.y,posTo.y)
+    return {x=x*scale,y=y*scale}
+end
+
+local function get_pos_on_Umap_from_connection(platform,scale)
+    if not scale then scale=1 end
+    local space_connection=platform.space_connection
+    local from=space_connection.from
+    local to=space_connection.to
+    local length=space_connection.length
+
+    local dist=platform.distance
+    local posFrom=from.position
+    local posTo=to.position
+    local star={position={x=0,y=0}}--prototypes.space_location[storage.gpuniverse[from.name].name]
 
     posFrom=util_math.minus_vector(posFrom,star.position)
     posTo=util_math.minus_vector(posTo,star.position)
@@ -93,11 +112,12 @@ local function on_tick(e)
                                 surface="gpstar-gpuniverse",
                                 force=storage.gpplatform[platform.index].force
                             }
+                            storage.gpship[storage.gpplatform[platform.index].unit_number]=nil
                             storage.gpplatform[platform.index].destroy()
                             storage.gpplatform[platform.index]=temp
                             storage.gpship[temp.unit_number]=platform
                         end
-                        local position=util_math.minus_vector(get_pos_on_map_from_connection(platform,1/5),{x=50*1/5,y=0})
+                        local position=util_math.minus_vector(get_pos_on_Umap_from_connection(platform,1/5),{x=50*1/5,y=0})
                         storage.gpplatform[platform.index].teleport(position)
                     else
                         local star=game.surfaces["gpstar-gpuniverse"].find_entities_filtered{name=storage.gpuniverse[platform.space_connection.from.name].name}
@@ -111,6 +131,7 @@ local function on_tick(e)
                                 surface=storage.gpuniverse[platform.space_connection.from.name].surface,
                                 force=storage.gpplatform[platform.index].force
                             }
+                            storage.gpship[storage.gpplatform[platform.index].unit_number]=nil
                             storage.gpplatform[platform.index].destroy()
                             storage.gpplatform[platform.index]=temp
                             storage.gpship[temp.unit_number]=platform

@@ -1,11 +1,12 @@
 require("util.randomlua")
-local superbarrel=require("util.superbarrel")
-local planet_map_gen=require("prototypes.planet_gen_settings")
+local uCreator = require("util.universeCreator")
+local superbarrel = require("util.superbarrel")
+local planet_map_gen = require("prototypes.planet_gen_settings")
 
 
 require("final-fixes.collector")
 --helpers.write_file("tech.json",helpers.table_to_json(data.raw["technology"]))
-helpers.write_file("gpcoll.json",helpers.table_to_json(gpPlanetCollector))
+helpers.write_file("gpcoll.json", helpers.table_to_json(gpPlanetCollector))
 
 
 --on gere les compat dans le collector (ex "maraxsis-trench")
@@ -19,16 +20,19 @@ require("final-fixes.universe")
 
 
 --- on met a jour le gp-tree pour avoir l'arbo
-local spacelocationfinalupdate=require("final-fixes.spacelocation")
+local spacelocationfinalupdate = require("final-fixes.spacelocation")
 for planet_name, planet in pairs(data.raw["planet"]) do
-   spacelocationfinalupdate.updateArbo(planet)
+  spacelocationfinalupdate.updateArbo(planet)
+  planet.surface_properties["size_surface"] = uCreator.get_planet_size(planet.magnitude)
+  planet.auto_save_on_first_trip = false
 end
 for planet_name, planet in pairs(data.raw["space-location"]) do
-   if not string.find(planet_name,"space-location-unknown",0,true) and not string.find(planet_name,"shattered-planet",0,true) then
-      if not string.find(planet_name,"gpstar-",0,true) and not string.find(planet_name,"-system-edge",0,true) then
-         spacelocationfinalupdate.updateArbo(planet)
-      end
-   end
+  if not string.find(planet_name, "space-location-unknown", 0, true) and not string.find(planet_name, "shattered-planet", 0, true) then
+    if not string.find(planet_name, "gpstar-", 0, true) and not string.find(planet_name, "-system-edge", 0, true) then
+      spacelocationfinalupdate.updateArbo(planet)
+    end
+  end
+  planet.auto_save_on_first_trip = false
 end
 
 
@@ -45,27 +49,27 @@ for _, h_fluid in pairs(gp_gazeous_field["heavy"]) do
         type = "recipe",
         name = name,
         enabled = lihop_debug,
-        localised_name={"recipe-name.gazeous-planet-harvester"},
+        localised_name = { "recipe-name.gazeous-planet-harvester" },
         surface_conditions = { { property = "gravity", min = 0, max = 0 } },
         category = "gp-harvesting",
         energy_required = 2,
         ingredients = {},
         subgroup = "fluid-recipes",
         order = "z",
-        icons={
+        icons = {
           {
             icon = "__zzz-GalacticProtocol__/graphics/entity/harvester/harvester-icon.png",
-            scale=1.1
+            scale = 1.1
           },
           {
             icon = data.raw["fluid"][h_fluid].icon,
-            shift={-15,15},
-            scale=0.5
+            shift = { -15, 15 },
+            scale = 0.5
           },
           {
-            icon =data.raw["fluid"][l_fluid].icon,
-            shift={15,15},
-            scale=0.5
+            icon = data.raw["fluid"][l_fluid].icon,
+            shift = { 15, 15 },
+            scale = 0.5
           }
         },
         results = {
@@ -109,22 +113,21 @@ data:extend({
 -- planet size
 planet_map_gen.planet_size()
 
+-- rebuild du tech tree
+require("final-fixes.technology-tree-builder").buildtree()
 
 -- on fait les minor changes en fonction des mods COMPAT
 require("compat.minor-change")
 
 
--- rebuild du tech tree
-require("final-fixes.technology-tree-builder").buildtree()
-
 -- envoi vers control stage
 data:extend({
-   {
-      type="mod-data",
-      data_type="gptree",
-      data=gptree,
-      name="gptree"
-   }
+  {
+    type = "mod-data",
+    data_type = "gptree",
+    data = gptree,
+    name = "gptree"
+  }
 })
 
 --on force le player a spawn sur nauvis avec les items de base

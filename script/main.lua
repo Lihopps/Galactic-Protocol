@@ -4,8 +4,10 @@ local player=require("script.player")
 
 local main={}
 
+local lihop_debug=true
+
 function main.on_init()
-    storage.lihop_debug=false
+    storage.lihop_debug=lihop_debug
     remote.call("space_finish_script","set_victory_location","gp-wormhole")
 
     --helpers.write_file("universe.json",helpers.table_to_json(prototypes.mod_data["gptree"].data))
@@ -15,6 +17,10 @@ function main.on_init()
     if not storage.players_custom_tooltip then storage.players_custom_tooltip ={} end
     force.createFriendly()
     starmap.createUniverse()
+end
+
+function main.on_load()
+    storage.lihop_debug=lihop_debug
 end
 
 function main.on_configuration_changed(e)

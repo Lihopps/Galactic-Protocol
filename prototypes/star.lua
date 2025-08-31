@@ -1,12 +1,12 @@
 local util_math = require("util.math")
 
-local star={}
+local star = {}
 
 ---defines solar power from temp
 ---@param temperature any
 ---@return unknown
 local function star_power(temperature)
-    return util_math.map(temperature,100,300,600,1500)
+    return util_math.map(temperature, 100, 300, 600, 1500)
 end
 
 ---defines color from temp
@@ -26,7 +26,7 @@ local function star_color(temperature)
 end
 
 
----defines size from temperature 
+---defines size from temperature
 ---@param temperature number : temperature of the star
 ---@return number : size of the star
 local function star_size(temperature)
@@ -38,40 +38,45 @@ end
 ---@param name string : star name
 ---@param temperature number : star temperature [100:300] (for tint solar power etc)
 ---@param position table : {distance=number,orientation=number}
-function star.create_star(name,temperature,position)
-    local etoile={
+function star.create_star(name, temperature, position)
+    local etoile = {
 
-    type = "space-location",
-    name = "gpstar-"..name,
-    localised_name=(name=="calidus" and "Calidus") or name,
-    icons = {
-        {
-            icon = "__zzz-GalacticProtocol__/graphics/starmap/star/starmap-star.png",
-            tint = star_color(temperature),
-            icon_size = 512,
-        }
-    },
-    magnitude = star_size(temperature),
-    starmap_icons = {
-        {
-            icon = "__zzz-GalacticProtocol__/graphics/starmap/star/starmap-star.png",
-            tint = star_color(temperature),
-            icon_size = 512,
-        }
-    },
-    order = "0",
-    subgroup="gpstar-"..name,
-    draw_orbit = false,
-    gravity_pull = 10*star_size(temperature),
-    solar_power_in_space = star_power(temperature),
-    auto_save_on_first_trip=false,
-    distance = position.distance,
-    orientation = position.orientation or position.angle,
-    label_orientation = 0.15,
-    position=util_math.fpol_to_cart(position),
-    field={plasma="fusion-plasma"}
-}
-return etoile
+        type = "space-location",
+        name = "gpstar-" .. name,
+        localised_name = (name == "calidus" and "Calidus") or name,
+        icons = {
+            {
+                icon = "__zzz-GalacticProtocol__/graphics/starmap/star/starmap-star.png",
+                tint = star_color(temperature),
+                icon_size = 512,
+            }
+        },
+        magnitude = star_size(temperature),
+        starmap_icons = {
+            {
+                icon = "__zzz-GalacticProtocol__/graphics/starmap/star/starmap-star.png",
+                tint = star_color(temperature),
+                icon_size = 512,
+            }
+        },
+        order = "0",
+        subgroup = "gpstar-" .. name,
+        draw_orbit = false,
+        gravity_pull = 20 * star_size(temperature),
+        solar_power_in_space = star_power(temperature),
+        auto_save_on_first_trip = false,
+        distance = position.distance,
+        orientation = position.orientation or position.angle,
+        label_orientation = 0.15,
+        position = util_math.fpol_to_cart(position),
+        fly_condition=true,
+        field = { plasma = "fusion-plasma" }
+    }
+    if mods["visible-planets"] then
+        vp_override_planet_scale(etoile.name, etoile.magnitude*2)
+        gp_create_planet_sprite_prototype(etoile,vp_get_planet_overrides())
+    end
+    return etoile
 end
 
 return star

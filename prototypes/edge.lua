@@ -11,7 +11,7 @@ function edge.create_edge(etoile)
 
     type = "space-location",
     name = etoile.name.."-system-edge",
-    localised_name={"gui.edgenamefromstar",etoile.name},
+    localised_name={"gui.edgenamefromstar",etoile.localised_name},
     icons = {
         {
             icon = "__zzz-GalacticProtocol__/graphics/starmap/star/solar-system-edge.png",

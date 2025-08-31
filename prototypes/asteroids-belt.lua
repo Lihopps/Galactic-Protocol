@@ -1,4 +1,5 @@
 local util_math=require("util.math")
+local asteroids_spawn=require("prototypes.asteroids")
 local belt={}
 
 function belt.asteroid_belt(gen,index,star,distance,position,planetname)
@@ -18,6 +19,7 @@ function belt.asteroid_belt(gen,index,star,distance,position,planetname)
     planet.solar_power_in_space=util_math.map(distance,0,50,star.solar_power_in_space,1)
     planet.fly_condition=true
     planet.moon=true
+    planet.asteroid_spawn_definitions=asteroids_spawn.spawn_belt(gen)
     return planet
 end
 

@@ -203,26 +203,26 @@ function starmap.addsystemtouniverse(star,first)
 
 
     --ajoute les connection si elle sont decouvertes
-    local parent_data = prototypes.mod_data["gptree"].data[star.name]
-    if parent_data then
-        for _,v in pairs(parent_data.connection) do
-            local conn=surface.find_entities_filtered{name=v}
-            if #conn==1 then
-                if conn[1] and conn[1].valid then
-                    local circle_size1 = math.abs(prototypes.entity[conn[1].name].selection_box.left_top.x)
-                    circle_size1 = circle_size1 + 0.3 * circle_size1
-                    local vector = util_math.normalise_vector(util_math.vector_from_pos(star.position,conn[1].position))
-                    local line = rendering.draw_line {
-                    color = { 1, 1, 1 },
-                    width = 2,
-                    from =util_math.add_vector(star.position, util_math.scale_vector(vector, circle_size)),
-                    to = util_math.minus_vector(conn[1].position, util_math.scale_vector(vector, circle_size1)),
-                    surface = surface
-                }
-                end
-            end
-        end
-    end
+    -- local parent_data = prototypes.mod_data["gptree"].data[star.name]
+    -- if parent_data then
+    --     for _,v in pairs(parent_data.connection) do
+    --         local conn=surface.find_entities_filtered{name=v}
+    --         if #conn==1 then
+    --             if conn[1] and conn[1].valid then
+    --                 local circle_size1 = math.abs(prototypes.entity[conn[1].name].selection_box.left_top.x)
+    --                 circle_size1 = circle_size1 + 0.3 * circle_size1
+    --                 local vector = util_math.normalise_vector(util_math.vector_from_pos(star.position,conn[1].position))
+    --                 local line = rendering.draw_line {
+    --                 color = { 1, 1, 1,0.2 },
+    --                 width = 2,
+    --                 from =util_math.add_vector(star.position, util_math.scale_vector(vector, circle_size)),
+    --                 to = util_math.minus_vector(conn[1].position, util_math.scale_vector(vector, circle_size1)),
+    --                 surface = surface
+    --             }
+    --             end
+    --         end
+    --     end
+    -- end
     if first then storage.gpuniverse["gp-universe"]=star end
 end
 

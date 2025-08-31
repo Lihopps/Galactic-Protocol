@@ -68,9 +68,7 @@ local function create_universe()
                 subgroup = "gpstar-interstellar_route",
                 from = from .. "-system-edge",
                 to = to .. "-system-edge",
-                length = 1000000,
-                --order = "z" .. edge[1].name,
-                need_spanwdef = true
+                length = 1000000,                
             })
     end
     table.insert(galaxy_objects, space_route)

@@ -9,5 +9,5 @@ local gazeous_fiel={
    
 }
 for name,type in pairs(gazeous_fiel) do
-    sc_add_gazeous_field(type,name)
+    gp_add_gazeous_field(type,name)
 end

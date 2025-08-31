@@ -195,7 +195,17 @@ end
 
 
 function util_tooltip.platform_caption_list(data,platform)
-    local caption=((not data.enabled and "[img=utility/warning_white]")or "").."  [space-location="..platform.last_visited_space_location.name.."]  "..platform.name
+    local caption={""}
+    if not data.enabled then
+        table.insert(caption,"[img=utility/warning_white]")
+    end
+    table.insert(caption,"  [space-location="..platform.last_visited_space_location.name.."]  ")
+    if platform.space_connection then
+        table.insert(caption,"⇨")
+        table.insert(caption,"  [space-location="..platform.space_connection.to.name.."]  ")
+    end
+    table.insert(caption,platform.name)
+
     return caption
 end
 

@@ -38,7 +38,7 @@ local function unlock_system(etoile, system)
     local tech = {
         type = "technology",
         name = etoile.name,
-        localised_name = { "technology-name.lihop-system-discovery", etoile.name },
+        localised_name = { "technology-name.lihop-system-discovery", etoile.localised_name },
         localised_description = { "technology-description.help-discovery", etoile.name },
         icons = util_graphics.sptechnology_icon_constant_planet(etoile.icons),
         icon_size = 256,

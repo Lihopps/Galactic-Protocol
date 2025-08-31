@@ -1,4 +1,4 @@
-lihop_debug=true
+lihop_debug=false
 if data.raw.planet["nauvis"] then
     data.raw.planet["nauvis"].surface_properties =
     {
