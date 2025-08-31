@@ -40,7 +40,14 @@ for name, prototype in pairs(data.raw["space-connection"]) do
     if prototype.need_spanwdef and from and to then
         prototype.asteroid_spawn_definitions = asteroids.spawn_connection(gen,prototype)
     end
-
+    if from and to then
+        if string.find(from.name,"-system-edge",0,true) then
+            from.asteroid_spawn_influence=0
+        end
+        if string.find(to.name,"-system-edge",0,true) then
+            to.asteroid_spawn_influence=0
+        end
+    end
 
     --pour aller plus vite en mode debug
     if lihop_debug then

@@ -1,5 +1,5 @@
 prochaine etape:
-    - gameplay boucle
+    - gameplay boucle avec mod
     - definir la victoire
     - localisation
     
